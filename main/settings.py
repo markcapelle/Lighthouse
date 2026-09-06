@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import dj_database_url
 from pathlib import Path
+import sys
 
 load_dotenv()
 
@@ -40,6 +41,9 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+
+    'main.middleware.AdminAccessMiddleware', #Gate django admin access
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -129,3 +133,8 @@ MAILERS = {
 
 # CLOUDINARY
 CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+
+#SUPERUSER and DJANGO ADMIN access gates
+ALLOW_SUPERUSER_CREATION = os.getenv("ALLOW_SUPERUSER_CREATION", "false").lower()
+if ALLOW_SUPERUSER_CREATION != "true" and "createsuperuser" in sys.argv:
+    raise SystemExit("Superuser creation is disabled in this environment.")
