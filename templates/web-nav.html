@@ -1,10 +1,28 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-        <a class="navbar-brand" href="/">Lighthouse</a>
 
-        <div>
-            <a class="btn btn-light me-2" href="/">Home</a>
-            <a class="btn btn-outline-light" href="/about">About</a>
+        <a class="navbar-brand fw-bold" href="/">Lighthouse</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#webNav" aria-controls="webNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="webNav">
+
+            <ul class="nav nav-tabs border-0 mt-2 mt-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/about' %}active{% endif %}" href="/about">About</a>
+                </li>
+
+            </ul>
+
         </div>
     </div>
 </nav>
