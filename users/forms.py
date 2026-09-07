@@ -30,7 +30,22 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError("Passwords do not match.")
 
         email = cleaned_data.get("email")
+
         if User.objects.filter(username=email).exists():
             raise forms.ValidationError("Email already exists.")
+
+        register_type = cleaned_data.get("register_type")
+
+        if register_type == "new":
+            if not cleaned_data.get("company_name"):
+                raise forms.ValidationError(
+                    "Please enter a company name."
+                )
+
+        elif register_type == "existing":
+            if not cleaned_data.get("existing_company"):
+                raise forms.ValidationError(
+                    "Please select an existing company."
+                )
 
         return cleaned_data

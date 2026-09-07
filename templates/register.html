@@ -41,12 +41,12 @@
                 {{ form.register_type }}
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3" id="new-company-container">
                 <label>New Company Name</label>
                 {{ form.company_name }}
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3" id="existing-company-container">
                 <label>Existing Company</label>
                 {{ form.existing_company }}
             </div>
@@ -60,4 +60,36 @@
 
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const registerType =
+            document.getElementById("id_register_type");
+
+        const newCompanyContainer =
+            document.getElementById("new-company-container");
+
+        const existingCompanyContainer =
+            document.getElementById("existing-company-container");
+
+        function toggleCompanyFields() {
+
+            if (registerType.value === "new") {
+                newCompanyContainer.style.display = "block";
+                existingCompanyContainer.style.display = "none";
+            } else {
+                newCompanyContainer.style.display = "none";
+                existingCompanyContainer.style.display = "block";
+            }
+        }
+
+        toggleCompanyFields();
+
+        registerType.addEventListener(
+            "change",
+            toggleCompanyFields
+        );
+    });
+</script>
 {% endblock %}
