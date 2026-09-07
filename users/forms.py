@@ -49,3 +49,18 @@ class RegistrationForm(forms.Form):
                 )
 
         return cleaned_data
+
+
+
+class ProfileForm(forms.Form):
+    first_name = forms.CharField(max_length=150)
+    last_name = forms.CharField(max_length=150)
+
+    email = forms.EmailField()
+
+    countrycode = forms.CharField(max_length=10)
+    phonenumber = forms.CharField(max_length=50)
+
+    mfa_enabled = forms.BooleanField(
+        required=False
+    )

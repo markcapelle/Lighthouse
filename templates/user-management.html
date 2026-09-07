@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    User Management
+</h2>
+
+<div class="card shadow">
+
+    <div class="card-body">
+
+        <table class="table table-striped">
+
+            <thead>
+
+                <tr>
+                    <th>Email</th>
+                    <th>Full Name</th>
+                    <th>Phone</th>
+                    <th>Controls</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for profile in users %}
+
+                <tr>
+
+                    <td>
+                        {{ profile.user.email }}
+                    </td>
+
+                    <td>
+                        {{ profile.user.first_name }}
+                        {{ profile.user.last_name }}
+                    </td>
+
+                    <td>
+                        {{ profile.countrycode }}
+                        {{ profile.phonenumber }}
+                    </td>
+
+                    <td>
+                        <div class="btn-group" role="group" aria-label="User actions">
+                            <a href="{% url 'view_user' profile.id %}" class="btn btn-primary btn-sm">
+                                View
+                            </a>
+
+                            <a href="{% url 'edit_user' profile.id %}" class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+
+                            <a href="{% url 'delete_user' profile.id %}" class="btn btn-danger btn-sm">
+                                Delete
+                            </a>
+                        </div>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
