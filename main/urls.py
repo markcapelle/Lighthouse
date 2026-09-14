@@ -2,10 +2,11 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
 from users.views import login_view, logout_view, dashboard_view, register_view, profile_view, edit_profile, user_management, view_user, edit_user, delete_user
-
+from customers.views import customer_list, customer_create
 
 def index(request):
     return render(request, 'index.html')
+
 
 urlpatterns = [
     path('', index, name='index'),
@@ -20,4 +21,6 @@ urlpatterns = [
     path("users/<int:profile_id>/",  view_user, name="view_user"),
     path( "users/<int:profile_id>/edit/", edit_user, name="edit_user"),
     path("users/<int:profile_id>/delete/", delete_user, name="delete_user"),
+    path("customers/", customer_list, name="customers"),
+    path("customers/new/", customer_create, name="customer_create"),
 ]

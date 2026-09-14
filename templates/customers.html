@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Customers
+</h2>
+
+<div class="mb-3">
+    <a href="{% url 'customer_create' %}" class="btn btn-primary">
+        New Customer
+    </a>
+</div>
+
+
+<div class="card shadow">
+    <div class="card-body">
+
+        
+        <table class="table table-striped">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for customer in customers %}
+
+                <tr>
+                    <td>{{ customer.customername }}</td>
+                    <td>{{ customer.maincontactname }}</td>
+                    <td>{{ customer.maincontactemail }}</td>
+                    <td>{{ customer.phonenumber }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
