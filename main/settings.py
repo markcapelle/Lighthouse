@@ -121,16 +121,6 @@ STATICFILES_DIRS = [
 ]
 
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
-
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
-
-
 # CLOUDINARY
 CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
 
@@ -138,3 +128,17 @@ CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
 ALLOW_SUPERUSER_CREATION = os.getenv("ALLOW_SUPERUSER_CREATION", "false").lower()
 if ALLOW_SUPERUSER_CREATION != "true" and "createsuperuser" in sys.argv:
     raise SystemExit("Superuser creation is disabled in this environment.")
+
+
+#EMAILING
+INSTALLED_APPS += ["anymail"]
+
+EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")  # Gmail sender
+
+ANYMAIL = {
+    "BREVO_API_KEY": os.getenv("BREVO_API_KEY"),
+}
+
+# Password reset token expiry
+PASSWORD_RESET_TIMEOUT = 3600  # 60 minutes
