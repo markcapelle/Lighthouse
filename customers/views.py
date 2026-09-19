@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from .models import Customer
 from .forms import CustomerForm
 
@@ -8,6 +8,7 @@ from .forms import CustomerForm
 
 
 @login_required
+@permission_required("customers.view_customer", raise_exception=True)
 def customer_list(request):
 
     customers = Customer.objects.filter(
@@ -23,6 +24,7 @@ def customer_list(request):
     )
 
 @login_required
+@permission_required("customers.add_customer", raise_exception=True)
 def customer_create(request):
 
     if request.method == "POST":
@@ -56,6 +58,7 @@ def customer_create(request):
 
 
 @login_required
+@permission_required("customers.view_customer", raise_exception=True)
 def customer_view(request, customer_id):
     customer = get_object_or_404(
         Customer,
@@ -67,6 +70,7 @@ def customer_view(request, customer_id):
 
 
 @login_required
+@permission_required("customers.change_customer", raise_exception=True)
 def customer_edit(request, customer_id):
     customer = get_object_or_404(
         Customer,
@@ -92,6 +96,7 @@ def customer_edit(request, customer_id):
 
 
 @login_required
+@permission_required("customers.delete_customer", raise_exception=True)
 def customer_delete(request, customer_id):
     customer = get_object_or_404(
         Customer,
