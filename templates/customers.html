@@ -33,7 +33,11 @@
             {% for customer in customers %}
 
                 <tr>
-                    <td>{{ customer.customername }}</td>
+                    <td>
+                        <a href="{% url 'customer_view' customer.id %}" class="btn btn-outline-primary btn-sm">
+                            {{ customer.customername }}
+                        </a>
+                    </td>
                     <td>{{ customer.maincontactname }}</td>
                     <td>{{ customer.maincontactemail }}</td>
                     <td>{{ customer.phonenumber }}</td>
