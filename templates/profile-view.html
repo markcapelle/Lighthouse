@@ -30,12 +30,20 @@
                 </p>
 
                 <p>
-                    <strong>Account Status</strong><br>
-
-                    {% if profile.approved %}
-                        Approved
+                    <strong>MFA:</strong>
+                    {% if profile.mfa_enabled %}
+                        <span class="badge bg-primary">Enabled</span>
                     {% else %}
-                        Pending Approval
+                        <span class="badge bg-secondary">Disabled</span>
+                    {% endif %}
+                </p>
+
+                <p>
+                    <strong>Account Status:</strong>
+                    {% if profile.user.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactive</span>
                     {% endif %}
                 </p>
 

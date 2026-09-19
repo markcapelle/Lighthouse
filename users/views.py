@@ -122,43 +122,6 @@ def register_view(request):
     )
 
 
-class ProfileForm(forms.Form):
-    first_name = forms.CharField(
-        max_length=150,
-        widget=forms.TextInput(
-            attrs={"class": "form-control"}
-        )
-    )
-
-    last_name = forms.CharField(
-        max_length=150,
-        widget=forms.TextInput(
-            attrs={"class": "form-control"}
-        )
-    )
-
-    email = forms.EmailField(
-        widget=forms.EmailInput(
-            attrs={"class": "form-control"}
-        )
-    )
-
-    countrycode = forms.CharField(
-        max_length=10,
-        widget=forms.TextInput(
-            attrs={"class": "form-control"}
-        )
-    )
-
-    phonenumber = forms.CharField(
-        max_length=50,
-        widget=forms.TextInput(
-            attrs={"class": "form-control"}
-        )
-    )
-
-
-
 
 @login_required
 def profile_view(request):
@@ -186,13 +149,11 @@ def edit_profile_common(request, profile):
             user.email = form.cleaned_data["email"]
             user.username = form.cleaned_data["email"]
 
-            profile.countrycode = (
-                form.cleaned_data["countrycode"]
-            )
+            profile.countrycode = (form.cleaned_data["countrycode"])
+            profile.phonenumber = (form.cleaned_data["phonenumber"])
 
-            profile.phonenumber = (
-                form.cleaned_data["phonenumber"]
-            )
+            profile.mfa_enabled = form.cleaned_data.get("mfa_enabled", False)
+            user.is_active = form.cleaned_data.get("is_active", True)
 
             user.save()
             profile.save()
@@ -208,6 +169,8 @@ def edit_profile_common(request, profile):
                 "email": profile.user.email,
                 "countrycode": profile.countrycode,
                 "phonenumber": profile.phonenumber,
+                "mfa_enabled": profile.mfa_enabled,
+                "is_active": profile.user.is_active,
             }
         )
 

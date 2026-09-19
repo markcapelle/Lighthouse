@@ -61,6 +61,5 @@ class ProfileForm(forms.Form):
     countrycode = forms.CharField(max_length=10)
     phonenumber = forms.CharField(max_length=50)
 
-    mfa_enabled = forms.BooleanField(
-        required=False
-    )
+    mfa_enabled = forms.BooleanField(required=False)
+    is_active = forms.BooleanField(required=False)
