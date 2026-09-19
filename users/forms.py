@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from .models import Company
 
 class RegistrationForm(forms.Form):
@@ -63,3 +63,5 @@ class ProfileForm(forms.Form):
 
     mfa_enabled = forms.BooleanField(required=False)
     is_active = forms.BooleanField(required=False)
+
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)

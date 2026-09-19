@@ -3,12 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from .models import Company, UserProfile
 from .forms import RegistrationForm, ProfileForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django import forms
 
-
-
-from django.contrib.auth.decorators import permission_required
 
 @login_required
 @permission_required("users.view_userprofile", raise_exception=True)
@@ -135,7 +132,7 @@ def profile_view(request):
     )
 
 
-def edit_profile_common(request, profile):
+def edit_profile_common(request, profile, redirect_to_view=True):
     if request.method == "POST":
 
         form = ProfileForm(request.POST)
@@ -153,12 +150,25 @@ def edit_profile_common(request, profile):
             profile.phonenumber = (form.cleaned_data["phonenumber"])
 
             profile.mfa_enabled = form.cleaned_data.get("mfa_enabled", False)
-            user.is_active = form.cleaned_data.get("is_active", True)
+            if request.user.groups.filter(name="Administrator").exists():
+                user.is_active = form.cleaned_data.get("is_active", True)
+
+            if request.user.groups.filter(name="Administrator").exists():
+                selected_group = form.cleaned_data.get("group")
+                profile.user.groups.clear()
+                if selected_group:  
+                    profile.user.groups.add(selected_group)
 
             user.save()
             profile.save()
 
-            return redirect("profile")
+            if redirect_to_view:
+                # Admin editing another user → go to that user's profile
+                return redirect("view_user", profile.id)
+            else:
+                # User editing self → go to their own profile
+                return redirect("profile")
+
 
     else:
 
@@ -171,6 +181,7 @@ def edit_profile_common(request, profile):
                 "phonenumber": profile.phonenumber,
                 "mfa_enabled": profile.mfa_enabled,
                 "is_active": profile.user.is_active,
+                "group": profile.user.groups.first(),
             }
         )
 
@@ -186,11 +197,8 @@ def edit_profile_common(request, profile):
 
 @login_required
 def edit_profile(request):
+    return edit_profile_common(request, request.user.profile, redirect_to_view=False)
 
-    return edit_profile_common(
-        request,
-        request.user.profile
-    )
 
 
 
@@ -215,16 +223,9 @@ def view_user(request, profile_id):
 @login_required
 @permission_required("users.change_userprofile", raise_exception=True)
 def edit_user(request, profile_id):
-    profile = get_object_or_404(
-        UserProfile,
-        id=profile_id,
-        company=request.user.profile.company
-    )
+    profile = get_object_or_404(UserProfile, id=profile_id, company=request.user.profile.company)
+    return edit_profile_common(request, profile, redirect_to_view=True)
 
-    return edit_profile_common(
-        request,
-        profile
-    )
 
 
 # DELETE USER

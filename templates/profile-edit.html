@@ -59,7 +59,14 @@
                 <label class="form-label">Active User</label>
                 {{ form.is_active }}
             </div>
+            <!-- {% endif %}
+            {% if request.user.groups.all.0.name == "Administrator" %} -->
+            <div class="mb-3">
+                <label class="form-label">Role / Group</label>
+                {{ form.group }}
+            </div>
             {% endif %}
+
 
             <button
                 type="submit"
