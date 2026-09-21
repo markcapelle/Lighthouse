@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
+from django.contrib.auth import views as auth_views
 from users.views import login_view, logout_view, dashboard_view, register_view, profile_view, edit_profile, user_management, view_user, edit_user, delete_user
 from customers.views import customer_list, customer_create, customer_view, customer_edit, customer_delete
-from django.contrib.auth import views as auth_views
+from products.views import product_list, product_create, product_view, product_edit, product_delete
 
 
 def index(request):
@@ -34,6 +35,13 @@ urlpatterns = [
     path("customers/<int:customer_id>/", customer_view, name="customer_view"),
     path("customers/<int:customer_id>/edit/", customer_edit, name="customer_edit"),
     path("customers/<int:customer_id>/delete/", customer_delete, name="customer_delete"),
+
+    #PRODUCTS
+    path("products/", product_list, name="products"),
+    path("products/new/", product_create, name="product_create"),
+    path("products/<int:product_id>/", product_view, name="product_view"),
+    path("products/<int:product_id>/edit/", product_edit, name="product_edit"),
+    path("products/<int:product_id>/delete/", product_delete, name="product_delete"),
 
     #PASSWORD RESET
     path("password-reset/", auth_views.PasswordResetView.as_view(template_name="password-reset.html"), name="password_reset"),
