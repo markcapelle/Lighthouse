@@ -1,42 +1,37 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <h2 class="mb-4">Products</h2>
 
 <div class="mb-3">
-    <a href="{% url 'product_create' %}" class="btn btn-primary">
-        New Product
-    </a>
+    <a href="{% url 'product_create' %}" class="btn btn-primary">New Product</a>
 </div>
 
 <div class="card shadow">
-    <div class="card-body">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Code</th>
-                    <th>Cost Price</th>
-                    <th>RRP</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                <tr>
-                    <td>
-                        <a href="{% url 'product_view' product.id %}"
-                           class="btn btn-outline-primary btn-sm">
-                            {{ product.productname }}
-                        </a>
-                    </td>
-                    <td>{{ product.productcode }}</td>
-                    <td>€{{ product.costprice }}</td>
-                    <td>€{{ product.rrp }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="card-body">
+<table class="table table-striped">
+<thead>
+<tr>
+    <th>Name</th>
+    <th>Code</th>
+    <th>Cost</th>
+    <th>RRP</th>
+</tr>
+</thead>
+<tbody>
+{% for product in products %}
+<tr>
+<td>
+    <a href="{% url 'product_view' product.id %}" class="btn btn-outline-primary btn-sm">
+        {{ product.productname }}
+    </a>
+</td>
+<td>{{ product.productcode }}</td>
+<td>€{{ product.costprice }}</td>
+<td>€{{ product.rrp }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
 </div>
-
+</div>
 {% endblock %}

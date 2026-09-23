@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">{{ product.productname }}</h2>
+
+<div class="card shadow">
+<div class="card-body">
+
+<p><strong>Code:</strong> {{ product.productcode }}</p>
+<p><strong>Description:</strong><br>{{ product.productdescription }}</p>
+<p><strong>Cost Price:</strong> €{{ product.costprice }}</p>
+<p><strong>RRP:</strong> €{{ product.rrp }}</p>
+
+<hr>
+
+<a href="{% url 'product_edit' product.id %}" class="btn btn-primary">Edit</a>
+<a href="{% url 'products' %}" class="btn btn-secondary">Back</a>
+
+</div>
+</div>
+{% endblock %}
