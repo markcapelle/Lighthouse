@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth import views as auth_views
 from users.views import login_view, logout_view, dashboard_view, register_view, profile_view, edit_profile, user_management, view_user, edit_user, delete_user
 from customers.views import customer_list, customer_create, customer_view, customer_edit, customer_delete
@@ -8,11 +8,15 @@ from products.views import product_list, product_create, product_view, product_e
 
 
 def index(request):
-    return render(request, 'index.html')
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+    return render(request, "index.html")
 
 
 urlpatterns = [
+    #INDEX
     path('', index, name='index'),
+    path('index/', index, name='index_page'),
 
     #LOGIN/LOGOUT
     path('login/', login_view, name='login'),
