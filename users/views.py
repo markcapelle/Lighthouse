@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from .models import Company, UserProfile
-from .forms import RegistrationForm, ProfileForm
+from .forms import RegistrationForm, ProfileForm, PasswordChangeForm, AdminPasswordChangeForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django import forms
 
@@ -228,7 +228,7 @@ def edit_user(request, profile_id):
 
 
 
-# DELETE USER
+#DELETE USER
 @login_required
 @permission_required("users.delete_userprofile", raise_exception=True)
 def delete_user(request, profile_id):
@@ -259,3 +259,46 @@ def delete_user(request, profile_id):
             "profile": profile
         }
     )
+
+
+#SELF SERVICE CHANGE PASSWORD
+@login_required
+def change_password(request):
+    profile = request.user.profile
+
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            new_pw = form.cleaned_data["password1"]
+            request.user.set_password(new_pw)
+            request.user.save()
+            return redirect("login")
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, "password-change.html", {"form": form, "profile": profile})
+
+
+
+#ADMIN CHANGE USER PASSWORD
+@login_required
+@permission_required("users.change_userprofile", raise_exception=True)
+def change_user_password(request, profile_id):
+    profile = get_object_or_404(
+        UserProfile,
+        id=profile_id,
+        company=request.user.profile.company
+    )
+
+    if request.method == "POST":
+        form = AdminPasswordChangeForm(request.POST)
+        if form.is_valid():
+            new_pw = form.cleaned_data["password1"]
+            profile.user.set_password(new_pw)
+            profile.user.save()
+            return redirect("view_user", profile.id)
+    else:
+        form = AdminPasswordChangeForm()
+
+    return render(request, "password-change.html", {"form": form, "profile": profile})
+

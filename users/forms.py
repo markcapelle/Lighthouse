@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User, Group
+from django.contrib.auth import authenticate
 from .models import Company
+
+
 
 class RegistrationForm(forms.Form):
     email = forms.EmailField()
@@ -65,3 +68,40 @@ class ProfileForm(forms.Form):
     is_active = forms.BooleanField(required=False)
 
     group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
+
+
+#SELF SERVICE PASSWORD CHANGE
+class PasswordChangeForm(forms.Form):
+    old_password = forms.CharField(widget=forms.PasswordInput())
+    password1 = forms.CharField(widget=forms.PasswordInput())
+    password2 = forms.CharField(widget=forms.PasswordInput())
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned = super().clean()
+
+        # Validate old password
+        old_pw = cleaned.get("old_password")
+        if not self.user.check_password(old_pw):
+            raise forms.ValidationError("Old password is incorrect.")
+
+        # Validate new passwords match
+        if cleaned.get("password1") != cleaned.get("password2"):
+            raise forms.ValidationError("New passwords do not match.")
+
+        return cleaned
+
+
+#ADMIN ASSISTED PASSWORD CHANGE
+class AdminPasswordChangeForm(forms.Form):
+    password1 = forms.CharField(widget=forms.PasswordInput())
+    password2 = forms.CharField(widget=forms.PasswordInput())
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get("password1") != cleaned.get("password2"):
+            raise forms.ValidationError("Passwords do not match.")
+        return cleaned
