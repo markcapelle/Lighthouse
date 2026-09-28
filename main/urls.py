@@ -8,7 +8,7 @@ from products.views import product_list, product_create, product_view, product_e
 from users.views import (
     login_view, logout_view, dashboard_view, register_view, profile_view, edit_profile, user_management, 
     view_user, edit_user, delete_user, 
-    change_password, change_user_password
+    change_password, change_user_password, password_reset_contact_admin
 )
 
 def index(request):
@@ -56,6 +56,7 @@ urlpatterns = [
     path("password-reset/done/", auth_views.PasswordResetDoneView.as_view(template_name="password-reset-done.html"), name="password_reset_done"),
     path("reset/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(template_name="password-reset-confirm.html"), name="password_reset_confirm"),
     path("reset/done/", auth_views.PasswordResetCompleteView.as_view(template_name="password-reset-complete.html"), name="password_reset_complete"),
+    path("password-reset/admin-request/", password_reset_contact_admin, name="password_reset_admin"),
 
     #PASSWORD CHANGE
     path("profile/change-password/", change_password, name="change_password"),

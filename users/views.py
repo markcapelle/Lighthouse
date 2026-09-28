@@ -4,7 +4,8 @@ from django.contrib.auth.models import User, Group
 from .models import Company, UserProfile
 from .forms import RegistrationForm, ProfileForm, PasswordChangeForm, AdminPasswordChangeForm
 from django.contrib.auth.decorators import login_required, permission_required
-from django import forms
+from django.conf import settings
+from anymail.message import AnymailMessage
 
 
 @login_required
@@ -302,3 +303,44 @@ def change_user_password(request, profile_id):
 
     return render(request, "password-change.html", {"form": form, "profile": profile})
 
+
+# REQUEST ADMIN HELP FOR PASSWORD RESET
+def password_reset_contact_admin(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+
+        # If no email entered, just show success page (no info leak)
+        if not email:
+            return render(request, "password-reset-admin-done.html")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # Do NOT reveal that the email doesn't exist
+            return render(request, "password-reset-admin-done.html")
+
+        # Find administrators in the same company
+        company = user.profile.company
+        admin_group = Group.objects.get(name="Administrator")
+
+        admins = User.objects.filter(
+            groups=admin_group,
+            profile__company=company
+        )
+
+        admin_emails = [a.email for a in admins if a.email]
+
+        if admin_emails:
+            msg = AnymailMessage(
+                subject="Password Reset Assistance Requested",
+                body=f"The user {user.email} requires help resetting their password.",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=admin_emails,   # Brevo will now send to ALL recipients
+            )
+
+            msg.send()
+
+        return render(request, "password-reset-admin-done.html")
+
+    # Fallback: show normal reset page
+    return render(request, "password-reset.html")
