@@ -52,32 +52,28 @@
 
                     <!-- User dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userMenu"
-                           role="button" data-bs-toggle="dropdown">
-                            {{ request.user.username }}
+                        <a class="nav-link dropdown-toggle p-0" href="#" role="button" data-bs-toggle="dropdown">
+                            <img src="{{ request.user.profile.avatar }}" 
+                                alt="avatar"
+                                class="rounded-circle"
+                                style="width:32px; height:32px; object-fit:cover;">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="/profile">Profile</a></li>
                             <li><a class="dropdown-item" href="/profile/edit">Edit Profile</a></li>
+
+                            <!-- Admin Options -->
+                            {% for group in request.user.groups.all %}
+                                {% if group.name == 'Administrator' %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/manage-users">Manage Users</a></li>
+                                {% endif %}
+
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
                         </ul>
                     </li>
 
-                    {% for group in request.user.groups.all %}
-                        {% if group.name == 'Administrator' %}
-                        <!-- Admin dropdown -->
-                        <li class="nav-item dropdown ms-3">
-                            <a class="nav-link dropdown-toggle text-warning" href="#" id="adminMenu"
-                            role="button" data-bs-toggle="dropdown">
-                                Admin
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/admin/">Django Admin</a></li>
-                                <li><a class="dropdown-item" href="/manage-users">Manage Users</a></li>
-                            </ul>
-                        </li>
-                        {% endif %}
                     {% endfor %}
 
                 {% endif %}

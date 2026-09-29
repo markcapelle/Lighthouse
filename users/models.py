@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.templatetags.static import static
 
 
 class Company(models.Model):
@@ -32,9 +33,15 @@ class UserProfile(models.Model):
     approved = models.BooleanField(default=False)
 
     mfa_enabled = models.BooleanField(default=False)
-    avatar_url = models.CharField(max_length=500, blank=True, null=True)
+    avatar_url = models.URLField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     force_password_change = models.BooleanField(default=False)
+
+    @property
+    def avatar(self):
+        if self.avatar_url:
+            return self.avatar_url
+        return static("img/default-avatar.jpg")

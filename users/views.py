@@ -6,7 +6,7 @@ from .forms import RegistrationForm, ProfileForm, PasswordChangeForm, AdminPassw
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
 from anymail.message import AnymailMessage
-
+import cloudinary.uploader
 
 @login_required
 @permission_required("users.view_userprofile", raise_exception=True)
@@ -137,13 +137,12 @@ def profile_view(request):
     )
 
 
+
 def edit_profile_common(request, profile, redirect_to_view=True):
     if request.method == "POST":
-
-        form = ProfileForm(request.POST)
+        form = ProfileForm(request.POST, request.FILES)
 
         if form.is_valid():
-
             user = profile.user
 
             user.first_name = form.cleaned_data["first_name"]
@@ -151,32 +150,37 @@ def edit_profile_common(request, profile, redirect_to_view=True):
             user.email = form.cleaned_data["email"]
             user.username = form.cleaned_data["email"]
 
-            profile.countrycode = (form.cleaned_data["countrycode"])
-            profile.phonenumber = (form.cleaned_data["phonenumber"])
-
+            profile.countrycode = form.cleaned_data["countrycode"]
+            profile.phonenumber = form.cleaned_data["phonenumber"]
             profile.mfa_enabled = form.cleaned_data.get("mfa_enabled", False)
-            if request.user.groups.filter(name="Administrator").exists():
-                user.is_active = form.cleaned_data.get("is_active", True)
 
-            if request.user.groups.filter(name="Administrator").exists():
-                selected_group = form.cleaned_data.get("group")
-                profile.user.groups.clear()
-                if selected_group:  
-                    profile.user.groups.add(selected_group)
+            # Clear avatar
+            if form.cleaned_data.get("clear_avatar"):
+                profile.avatar_url = None
+
+            # Upload avatar
+            if form.cleaned_data.get("avatar"):
+                upload = cloudinary.uploader.upload(
+                    form.cleaned_data["avatar"],
+                    folder="avatars"
+                )
+                profile.avatar_url = upload["secure_url"]
 
             user.save()
             profile.save()
 
-            if redirect_to_view:
-                # Admin editing another user → go to that user's profile
-                return redirect("view_user", profile.id)
-            else:
-                # User editing self → go to their own profile
-                return redirect("profile")
+            return redirect("view_user", profile.id) if redirect_to_view else redirect("profile")
 
+        return render(
+            request,
+            "profile-edit.html",
+            {
+                "form": form,
+                "profile": profile,
+            }
+        )
 
     else:
-
         form = ProfileForm(
             initial={
                 "first_name": profile.user.first_name,
@@ -190,14 +194,15 @@ def edit_profile_common(request, profile, redirect_to_view=True):
             }
         )
 
-    return render(
-        request,
-        "profile-edit.html",
-        {
-            "form": form,
-            "profile": profile,
-        }
-    )
+        return render(
+            request,
+            "profile-edit.html",
+            {
+                "form": form,
+                "profile": profile,
+            }
+        )
+
 
 
 @login_required

@@ -7,6 +7,13 @@
         <div class="card shadow">
             <div class="card-body p-5">
 
+                <div class="text-center mb-4">
+                    <img src="{{ profile.avatar }}" 
+                    alt="Avatar"
+                    class="rounded-circle border"
+                    style="width: 150px; height: 150px; object-fit: cover;">
+                </div>
+
                 <h2>
                     {{ profile.user.first_name }}
                     {{ profile.user.last_name }}

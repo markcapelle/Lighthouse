@@ -58,16 +58,16 @@ class RegistrationForm(forms.Form):
 class ProfileForm(forms.Form):
     first_name = forms.CharField(max_length=150)
     last_name = forms.CharField(max_length=150)
-
     email = forms.EmailField()
-
     countrycode = forms.CharField(max_length=10)
     phonenumber = forms.CharField(max_length=50)
-
     mfa_enabled = forms.BooleanField(required=False)
     is_active = forms.BooleanField(required=False)
-
     group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
+
+    avatar = forms.ImageField(required=False)
+    clear_avatar = forms.BooleanField(required=False)
+
 
 
 #SELF SERVICE PASSWORD CHANGE

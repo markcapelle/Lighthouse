@@ -4,6 +4,7 @@ import dj_database_url
 from pathlib import Path
 import sys
 
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -124,6 +125,7 @@ STATICFILES_DIRS = [
 
 # CLOUDINARY
 CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+
 
 #SUPERUSER and DJANGO ADMIN access gates
 ALLOW_SUPERUSER_CREATION = os.getenv("ALLOW_SUPERUSER_CREATION", "false").lower()
