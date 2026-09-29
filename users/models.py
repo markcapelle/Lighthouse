@@ -36,3 +36,5 @@ class UserProfile(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    force_password_change = models.BooleanField(default=False)

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from .models import Company, UserProfile
-from .forms import RegistrationForm, ProfileForm, PasswordChangeForm, AdminPasswordChangeForm
+from .forms import RegistrationForm, ProfileForm, PasswordChangeForm, AdminPasswordChangeForm, ForcedPasswordChangeForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
 from anymail.message import AnymailMessage
@@ -31,16 +31,20 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
+
+            if user.profile.force_password_change:
+                return redirect("forced_password_change")
+
             return redirect("/dashboard")
         else:
             return render(request, "login.html", {"error": "Invalid username or password"})
 
     return render(request, "login.html")
+
 
 
 def logout_view(request):
@@ -273,11 +277,17 @@ def change_password(request):
             new_pw = form.cleaned_data["password1"]
             request.user.set_password(new_pw)
             request.user.save()
+
+            # NEW: clear forced password change flag
+            profile.force_password_change = False
+            profile.save()
+
             return redirect("login")
     else:
         form = PasswordChangeForm(request.user)
 
     return render(request, "password-change.html", {"form": form, "profile": profile})
+
 
 
 
@@ -297,11 +307,18 @@ def change_user_password(request, profile_id):
             new_pw = form.cleaned_data["password1"]
             profile.user.set_password(new_pw)
             profile.user.save()
+
+            # NEW: force password change flag
+            if form.cleaned_data.get("force_change"):
+                profile.force_password_change = True
+                profile.save()
+
             return redirect("view_user", profile.id)
     else:
         form = AdminPasswordChangeForm()
 
     return render(request, "password-change.html", {"form": form, "profile": profile})
+
 
 
 # REQUEST ADMIN HELP FOR PASSWORD RESET
@@ -344,3 +361,32 @@ def password_reset_contact_admin(request):
 
     # Fallback: show normal reset page
     return render(request, "password-reset.html")
+
+
+#FORCE PASSWORD CHANGE
+@login_required
+def forced_password_change(request):
+    profile = request.user.profile
+
+    if not profile.force_password_change:
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        form = ForcedPasswordChangeForm(request.POST)
+        if form.is_valid():
+            new_pw = form.cleaned_data["password1"]
+            request.user.set_password(new_pw)
+            request.user.save()
+
+            profile.force_password_change = False
+            profile.save()
+
+            # Re-authenticate user so they don't get logged out
+            user = authenticate(username=request.user.username, password=new_pw)
+            login(request, user)
+
+            return redirect("dashboard")
+    else:
+        form = ForcedPasswordChangeForm()
+
+    return render(request, "password-change-forced.html", {"form": form})

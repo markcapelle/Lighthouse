@@ -99,6 +99,19 @@ class PasswordChangeForm(forms.Form):
 class AdminPasswordChangeForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput())
     password2 = forms.CharField(widget=forms.PasswordInput())
+    force_change = forms.BooleanField(required=False, label="Force user to change password on next login")
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get("password1") != cleaned.get("password2"):
+            raise forms.ValidationError("Passwords do not match.")
+        return cleaned
+
+
+#ADMIN FORCED PASSWORD CHANGE
+class ForcedPasswordChangeForm(forms.Form):
+    password1 = forms.CharField(widget=forms.PasswordInput())
+    password2 = forms.CharField(widget=forms.PasswordInput())
 
     def clean(self):
         cleaned = super().clean()
