@@ -8,8 +8,10 @@ gunicorn==26.2.0
 idna==3.19
 psycopg==3.3.5
 psycopg2-binary==2.9.12
+python-dateutil==2.9.0.post0
 python-dotenv==1.2.3
 requests==2.34.2
+six==1.17.0
 sqlparse==0.6.0
 tzdata==2026.3
 urllib3==2.7.0

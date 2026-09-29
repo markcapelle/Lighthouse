@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Renewal Details
+</h2>
+
+<div class="card shadow">
+    <div class="card-body">
+
+        <p><strong>Name:</strong> {{ renewal.renewalname }}</p>
+        <p><strong>Product:</strong> {{ renewal.product.productname }}</p>
+        <p><strong>Customer:</strong> {{ renewal.customer.customername }}</p>
+        <p><strong>Status:</strong> {{ renewal.status.name }}</p>
+        <p><strong>Start Date:</strong> {{ renewal.startdate }}</p>
+        <p><strong>Next Renewal:</strong> {{ renewal.next_renewal_date }}</p>
+        <p><strong>Price:</strong> €{{ renewal.customerprice }}</p>
+
+        <a href="{% url 'renewal_edit' renewal.id %}" class="btn btn-primary">
+            Edit
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}

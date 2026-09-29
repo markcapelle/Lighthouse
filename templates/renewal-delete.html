@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Delete Renewal
+</h2>
+
+<div class="card shadow">
+    <div class="card-body">
+
+        <p>
+            Are you sure you want to delete the renewal:
+            <strong>{{ renewal.renewalname }}</strong>?
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'renewal_view' renewal.id %}" class="btn btn-secondary">Cancel</a>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

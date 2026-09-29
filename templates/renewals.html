@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Renewals
+</h2>
+
+<div class="mb-3">
+    <a href="{% url 'renewal_create' %}" class="btn btn-primary">
+        New Renewal
+    </a>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+
+        <table class="table table-striped">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Product</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                    <th>Start Date</th>
+                    <th>Next Renewal</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for r in renewals %}
+
+                <tr>
+                    <td>
+                        <a href="{% url 'renewal_view' r.id %}" class="btn btn-outline-primary btn-sm">
+                            {{ r.renewalname }}
+                        </a>
+                    </td>
+                    <td>{{ r.product.productname }}</td>
+                    <td>{{ r.customer.customername }}</td>
+                    <td>{{ r.status.name }}</td>
+                    <td>{{ r.startdate }}</td>
+                    <td>{{ r.next_renewal_date }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

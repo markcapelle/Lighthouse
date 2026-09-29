@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import views as auth_views
 from customers.views import customer_list, customer_create, customer_view, customer_edit, customer_delete
 from products.views import product_list, product_create, product_view, product_edit, product_delete
+from renewals.views import renewal_list, renewal_create, renewal_view, renewal_edit, renewal_delete
 
 from users.views import (
     login_view, logout_view, dashboard_view, register_view, profile_view, edit_profile, user_management, 
@@ -50,6 +51,13 @@ urlpatterns = [
     path("products/<int:product_id>/", product_view, name="product_view"),
     path("products/<int:product_id>/edit/", product_edit, name="product_edit"),
     path("products/<int:product_id>/delete/", product_delete, name="product_delete"),
+
+    #RENEWALS
+    path("renewals/", renewal_list, name="renewals"),
+    path("renewals/new/", renewal_create, name="renewal_create"),
+    path("renewals/<int:renewal_id>/", renewal_view, name="renewal_view"),
+    path("renewals/<int:renewal_id>/edit/", renewal_edit, name="renewal_edit"),
+    path("renewals/<int:renewal_id>/delete/", renewal_delete, name="renewal_delete"),
 
     #PASSWORD RESET
     path("password-reset/", auth_views.PasswordResetView.as_view(template_name="password-reset.html"), name="password_reset"),
