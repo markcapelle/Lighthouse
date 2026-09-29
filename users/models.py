@@ -33,6 +33,9 @@ class UserProfile(models.Model):
     approved = models.BooleanField(default=False)
 
     mfa_enabled = models.BooleanField(default=False)
+    mfa_code = models.CharField(max_length=6, blank=True, null=True)
+    mfa_expires = models.DateTimeField(blank=True, null=True)
+
     avatar_url = models.URLField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

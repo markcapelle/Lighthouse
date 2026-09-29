@@ -9,7 +9,8 @@ from renewals.views import renewal_list, renewal_create, renewal_view, renewal_e
 from users.views import (
     login_view, logout_view, dashboard_view, register_view, profile_view, edit_profile, user_management, 
     view_user, edit_user, delete_user, 
-    change_password, change_user_password, password_reset_contact_admin, forced_password_change
+    change_password, change_user_password, password_reset_contact_admin, forced_password_change,
+    mfa_verify
 )
 
 def index(request):
@@ -70,4 +71,7 @@ urlpatterns = [
     #PASSWORD CHANGE
     path("profile/change-password/", change_password, name="change_password"),
     path("users/<int:profile_id>/change-password/", change_user_password, name="change_user_password"),
+
+    #MFA
+    path("mfa-verify/", mfa_verify, name="mfa_verify"),
 ]

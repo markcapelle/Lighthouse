@@ -46,7 +46,11 @@ MIDDLEWARE = [
     'main.middleware.AdminAccessMiddleware', #Gate django admin access
 
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'main.middleware.ForcePasswordChangeMiddleware',
+
+    'main.middleware.ForcePasswordChangeMiddleware', #Prevent bypassing when forcing password change
+
+    'main.middleware.MFAEnforcementMiddleware', #Prevent bypassing when waiting for MFA
+    
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

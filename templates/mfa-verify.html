@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>MFA Verification</h2>
+    <p>Please enter the 6-digit code sent to your email.</p>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="code" class="form-control" maxlength="6" required>
+        <button class="btn btn-primary mt-3">Verify</button>
+    </form>
+</div>
+{% endblock %}

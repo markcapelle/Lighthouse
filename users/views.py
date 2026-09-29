@@ -7,6 +7,9 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
 from anymail.message import AnymailMessage
 import cloudinary.uploader
+from django.utils import timezone
+from datetime import timedelta
+import random
 
 @login_required
 @permission_required("users.view_userprofile", raise_exception=True)
@@ -34,16 +37,43 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+
+            # --- MFA CHECK ---
+            if user.profile.mfa_enabled:
+                code = f"{random.randint(100000, 999999)}"
+                user.profile.mfa_code = code
+                user.profile.mfa_expires = timezone.now() + timedelta(minutes=10)
+                user.profile.save()
+
+                # Email the code
+                msg = AnymailMessage(
+                    subject="Your Lighthouse Login Code",
+                    body=f"Your verification code is: {code}",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[user.email],
+                )
+                msg.send()
+
+                # Store MFA session flags
+                request.session["mfa_user_id"] = user.id
+                request.session["mfa_pending"] = True
+
+                return redirect("mfa_verify")
+
+            # --- NORMAL LOGIN ---
             login(request, user)
 
+            # Forced password change check
             if user.profile.force_password_change:
                 return redirect("forced_password_change")
 
-            return redirect("/dashboard")
-        else:
-            return render(request, "login.html", {"error": "Invalid username or password"})
+            return redirect("dashboard")
+
+        # Invalid login
+        return render(request, "login.html", {"error": "Invalid username or password"})
 
     return render(request, "login.html")
+
 
 
 
@@ -144,7 +174,6 @@ def edit_profile_common(request, profile, redirect_to_view=True):
 
         if form.is_valid():
             user = profile.user
-
             user.first_name = form.cleaned_data["first_name"]
             user.last_name = form.cleaned_data["last_name"]
             user.email = form.cleaned_data["email"]
@@ -153,6 +182,8 @@ def edit_profile_common(request, profile, redirect_to_view=True):
             profile.countrycode = form.cleaned_data["countrycode"]
             profile.phonenumber = form.cleaned_data["phonenumber"]
             profile.mfa_enabled = form.cleaned_data.get("mfa_enabled", False)
+
+            user.is_active = form.cleaned_data.get("is_active", True)
 
             # Clear avatar
             if form.cleaned_data.get("clear_avatar"):
@@ -166,10 +197,17 @@ def edit_profile_common(request, profile, redirect_to_view=True):
                 )
                 profile.avatar_url = upload["secure_url"]
 
+            # Update user group
+            new_group = form.cleaned_data.get("group")
+            user.groups.clear()
+            if new_group:
+                user.groups.add(new_group)
+
             user.save()
             profile.save()
 
             return redirect("view_user", profile.id) if redirect_to_view else redirect("profile")
+
 
         return render(
             request,
@@ -395,3 +433,39 @@ def forced_password_change(request):
         form = ForcedPasswordChangeForm()
 
     return render(request, "password-change-forced.html", {"form": form})
+
+
+#MFA VERIFICATION
+def mfa_verify(request):
+    user_id = request.session.get("mfa_user_id")
+    if not user_id:
+        return redirect("login")
+
+    user = User.objects.get(id=user_id)
+    profile = user.profile
+
+    if request.method == "POST":
+        code = request.POST.get("code")
+
+        if (
+            profile.mfa_code == code
+            and profile.mfa_expires
+            and profile.mfa_expires > timezone.now()
+        ):
+            # Clear MFA code
+            profile.mfa_code = None
+            profile.mfa_expires = None
+            profile.save()
+
+            # COMPLETE MFA
+            request.session["mfa_pending"] = False   # <-- REQUIRED
+            request.session["mfa_user_id"] = None    # optional cleanup
+
+            # Log the user in
+            login(request, user)
+
+            return redirect("dashboard")
+
+        return render(request, "mfa-verify.html", {"error": "Invalid or expired code"})
+
+    return render(request, "mfa-verify.html")
