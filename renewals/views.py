@@ -1,17 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import JsonResponse
+
 from .models import Renewal
 from .forms import RenewalForm
 
-
-#RENEWAL LIST
+# RENEWAL LIST
 @login_required
 @permission_required("renewals.view_renewal", raise_exception=True)
 def renewal_list(request):
     company = request.user.profile.company
 
-    # Base queryset (multi-tenant safe)
     renewals = Renewal.objects.filter(
         customer__company=company,
         product__company=company
@@ -29,7 +28,6 @@ def renewal_list(request):
     if customer_id:
         renewals = renewals.filter(customer_id=customer_id)
 
-    # Dropdown data
     from .models import RenewalStatus
     from products.models import Product
     from customers.models import Customer
@@ -46,18 +44,19 @@ def renewal_list(request):
     })
 
 
-#RENEWAL CREATE
+# RENEWAL CREATE
 @login_required
 @permission_required("renewals.add_renewal", raise_exception=True)
 def renewal_create(request):
     company = request.user.profile.company
+
     if request.method == "POST":
         form = RenewalForm(request.POST, company=company)
         if form.is_valid():
             renewal = form.save(commit=False)
             renewal.createdbyuser = request.user
             renewal.updatedbyuser = request.user
-            renewal.save()
+            renewal.save()  # auto-calculates customerprice
             return redirect("renewals")
     else:
         form = RenewalForm(company=company)
@@ -65,7 +64,7 @@ def renewal_create(request):
     return render(request, "renewal-form.html", {"form": form, "title": "New Renewal"})
 
 
-#RENEWAL VIEW
+# RENEWAL VIEW
 @login_required
 @permission_required("renewals.view_renewal", raise_exception=True)
 def renewal_view(request, renewal_id):
@@ -77,7 +76,7 @@ def renewal_view(request, renewal_id):
     return render(request, "renewal-view.html", {"renewal": renewal})
 
 
-#RENEWAL EDIT
+# RENEWAL EDIT
 @login_required
 @permission_required("renewals.change_renewal", raise_exception=True)
 def renewal_edit(request, renewal_id):
@@ -93,7 +92,7 @@ def renewal_edit(request, renewal_id):
         if form.is_valid():
             renewal = form.save(commit=False)
             renewal.updatedbyuser = request.user
-            renewal.save()
+            renewal.save()  # auto-calculates customerprice
 
             # AJAX autosave support
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -106,7 +105,7 @@ def renewal_edit(request, renewal_id):
     return render(request, "renewal-edit.html", {"form": form, "renewal": renewal})
 
 
-#RENEWAL DELETE
+# RENEWAL DELETE
 @login_required
 @permission_required("renewals.delete_renewal", raise_exception=True)
 def renewal_delete(request, renewal_id):

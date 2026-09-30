@@ -13,23 +13,33 @@ class RenewalForm(forms.ModelForm):
             "status",
             "customer",
             "product",
-            "customerprice",
+            "count",               # NEW FIELD
             "startdate",
             "frequency",
             "next_renewal_date",
         ]
         labels = {
             "next_renewal_date": "Renewal Date",
+            "count": "Licence Count",
         }
         widgets = {
             "renewalname": forms.TextInput(attrs={"class": "form-control"}),
             "status": forms.Select(attrs={"class": "form-select"}),
             "customer": forms.Select(attrs={"class": "form-select"}),
             "product": forms.Select(attrs={"class": "form-select"}),
-            "customerprice": forms.NumberInput(attrs={"class": "form-control", "step": "0.01"}),
-            "startdate": forms.DateInput(attrs={"class": "form-control", "type": "date"}, format="%Y-%m-%d"),
+
+            # NEW count widget
+            "count": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+
+            "startdate": forms.DateInput(
+                attrs={"class": "form-control", "type": "date"},
+                format="%Y-%m-%d"
+            ),
             "frequency": forms.Select(attrs={"class": "form-select"}),
-            "next_renewal_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}, format="%Y-%m-%d"),
+            "next_renewal_date": forms.DateInput(
+                attrs={"class": "form-control", "type": "date"},
+                format="%Y-%m-%d"
+            ),
         }
 
     def __init__(self, *args, company=None, **kwargs):
@@ -56,9 +66,11 @@ class RenewalForm(forms.ModelForm):
     def clean(self):
         cleaned = super().clean()
         freq = cleaned.get("frequency")
+
         if freq == "custom":
             if not cleaned.get("next_renewal_date"):
                 self.add_error("next_renewal_date", "Please set a renewal date for a custom frequency.")
         else:
             cleaned["next_renewal_date"] = None  # auto-calculated in model save()
+
         return cleaned
