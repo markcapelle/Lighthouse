@@ -85,7 +85,42 @@ def logout_view(request):
 
 @login_required
 def dashboard_view(request):
-    return render(request, "dashboard.html")
+    from renewals.models import Renewal, RenewalStatus
+    from products.models import Product
+    from customers.models import Customer
+
+    company = request.user.profile.company
+
+    # Base queryset (multi-tenant safe)
+    renewals = Renewal.objects.filter(
+        customer__company=company,
+        product__company=company
+    )
+
+    # Filters
+    status_id = request.GET.get("status")
+    product_id = request.GET.get("product")
+    customer_id = request.GET.get("customer")
+
+    if status_id:
+        renewals = renewals.filter(status_id=status_id)
+
+    if product_id:
+        renewals = renewals.filter(product_id=product_id)
+
+    if customer_id:
+        renewals = renewals.filter(customer_id=customer_id)
+
+    context = {
+        "statuses": RenewalStatus.objects.all(),
+        "products": Product.objects.filter(company=company),
+        "customers": Customer.objects.filter(company=company),
+        "renewals": renewals,
+    }
+
+    return render(request, "dashboard.html", context)
+
+
 
 
 

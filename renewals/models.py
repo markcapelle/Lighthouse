@@ -2,8 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from customers.models import Customer
 from products.models import Product
-from datetime import timedelta
 from dateutil.relativedelta import relativedelta
+from datetime import timedelta
+
 
 
 class RenewalStatus(models.Model):

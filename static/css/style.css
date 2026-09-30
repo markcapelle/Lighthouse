@@ -21,3 +21,16 @@
     color: #0d6efd;
     border-color: #ffffff;
 }
+
+
+
+
+/* UPCOMING/OVERDUE NOTIFICATION */
+.renewal-warning > td {
+    background-color: #ffe0b3 !important; /* orange */
+}
+
+.renewal-danger > td {
+    background-color: #f8d7da !important; /* red */
+}
+
