@@ -22,8 +22,19 @@ class Renewal(models.Model):
     ]
 
     renewalname = models.CharField(max_length=255)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="renewals"
+    )
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="renewals"
+    )
+
     status = models.ForeignKey(RenewalStatus, on_delete=models.CASCADE)
 
     # NEW FIELD: number of licences
