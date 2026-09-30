@@ -1,42 +1,51 @@
 {% load static %}
 
-<table class="table table-striped table-hover mb-0">
-    <thead class="table-light">
+<table class="table table-striped table-hover mb-0" data-sortable>
+    <thead>
         <tr>
-            <th>Name</th>
-            <th>Product</th>
-            <th>Customer</th>
-            <th>Status</th>
-            <th>Start Date</th>
-            <th>Next Renewal</th>
-            <th>Price</th>
+            <th data-sort="string">Renewal Name</th>
+            <th data-sort="string">Status</th>
+            <th data-sort="string">Product</th>
+            <th data-sort="string">Customer</th>
+            <th data-sort="string">Frequency</th>
+            <th data-sort="date">Next Renewal</th>
+            <th data-sort="number">Price</th>
         </tr>
     </thead>
 
     <tbody>
         {% for r in renewals %}
         <tr>
+            <!-- Renewal Name -->
             <td>
                 <a href="{% url 'renewal_view' r.id %}" class="btn btn-outline-primary btn-sm">
                     {{ r.renewalname }}
                 </a>
             </td>
-            <td>{{ r.product.productname }}</td>
-            <td>{{ r.customer.customername }}</td>
-            <td>{{ r.status.name }}</td>
-            <td>{{ r.startdate }}</td>
 
-            <!-- IMPORTANT: ISO date for JS -->
+            <!-- Status -->
+            <td>{{ r.status.name }}</td>
+
+            <!-- Product -->
+            <td>{{ r.product.productname }}</td>
+
+            <!-- Customer -->
+            <td>{{ r.customer.customername }}</td>
+
+            <!-- Frequency -->
+            <td>{{ r.frequency }}</td>
+
+            <!-- Next Renewal (ISO for sorting) -->
             <td class="renewal-date"
                 data-date="{{ r.next_renewal_date|date:'c' }}">
                 {{ r.next_renewal_date }}
             </td>
 
+            <!-- Price -->
             <td>€{{ r.customerprice }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
-<!-- JS for renewal colouring -->
 <script src="{% static 'js/renewals.js' %}"></script>
