@@ -48,3 +48,14 @@ class UserProfile(models.Model):
         if self.avatar_url:
             return self.avatar_url
         return static("img/default-avatar.jpg")
+
+    @property
+    def formatted_phone(self):
+        """
+        Display phone number as: +353 (0)85 1234567
+        """
+        if not self.countrycode or not self.phonenumber:
+            return ""
+
+        # Insert (0) after country code
+        return f"{self.countrycode} (0){self.phonenumber}"

@@ -44,5 +44,12 @@ class Customer(models.Model):
         null=True
     )
 
+    @property
+    def formatted_phone(self):
+        if not self.countrycode or not self.phonenumber:
+            return ""
+        return f"{self.countrycode} (0){self.phonenumber}"
+
+
     def __str__(self):
         return self.customername

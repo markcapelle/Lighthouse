@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate
 from .models import Company
+from .country_codes import COUNTRY_CODES
 
 
 
@@ -10,7 +11,7 @@ class RegistrationForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput())
     password2 = forms.CharField(widget=forms.PasswordInput())
 
-    countrycode = forms.CharField(max_length=10)
+    countrycode = forms.ChoiceField(choices=COUNTRY_CODES)
     phonenumber = forms.CharField(max_length=50)
 
     register_type = forms.ChoiceField(
@@ -25,6 +26,16 @@ class RegistrationForm(forms.Form):
         queryset=Company.objects.all(),
         required=False
     )
+
+    def clean_phonenumber(self):
+        number = self.cleaned_data["phonenumber"].strip()
+
+        # Remove leading zero
+        if number.startswith("0"):
+            number = number[1:]
+
+        return number
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -59,14 +70,25 @@ class ProfileForm(forms.Form):
     first_name = forms.CharField(max_length=150)
     last_name = forms.CharField(max_length=150)
     email = forms.EmailField()
-    countrycode = forms.CharField(max_length=10)
+
+    countrycode = forms.ChoiceField(choices=COUNTRY_CODES)
     phonenumber = forms.CharField(max_length=50)
+
     mfa_enabled = forms.BooleanField(required=False)
     is_active = forms.BooleanField(required=False)
     group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False)
 
     avatar = forms.ImageField(required=False)
     clear_avatar = forms.BooleanField(required=False)
+
+    def clean_phonenumber(self):
+        number = self.cleaned_data["phonenumber"].strip()
+
+        if number.startswith("0"):
+            number = number[1:]
+
+        return number
+
 
 
 
