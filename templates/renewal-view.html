@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -15,7 +16,6 @@
         <p><strong>Product:</strong> {{ renewal.product.productname }}</p>
 
         <p><strong>Licence Count:</strong> {{ renewal.count }}</p>
-        <p><strong>Price:</strong> €{{ renewal.customerprice }}</p>
 
         <p><strong>Start Date:</strong> {{ renewal.startdate }}</p>
         <p><strong>Frequency:</strong> {{ renewal.get_frequency_display }}</p>
@@ -26,12 +26,29 @@
             <p><strong>Next Renewal:</strong> {{ renewal.next_renewal_date }}</p>
         {% endif %}
 
+        <p><strong>Price:</strong> €{{ renewal.customerprice }}</p>
 
-        <a href="{% url 'renewal_edit' renewal.id %}" class="btn btn-primary">
+        <a href="{% url 'renewal_edit' renewal.id %}" class="btn btn-primary me-2">
             Edit
         </a>
 
+        <button id="copy-quote" class="btn btn-success">
+            Get Quote
+        </button>
+
     </div>
 </div>
+
+<!-- JSON Blob to pass django template data to the js file -->
+<script id="quote-data" type="application/json">
+{
+    "product": "{{ renewal.product.productname|escapejs }}",
+    "price": "{{ renewal.customerprice }}",
+    "count": "{{ renewal.count }}",
+    "description": "{{ renewal.product.productdescription|escapejs }}"
+}
+</script>
+
+<script src="{% static 'js/generate-quote.js' %}"></script>
 
 {% endblock %}
