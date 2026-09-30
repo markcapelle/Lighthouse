@@ -7,15 +7,58 @@
     <h2>Dashboard</h2>
     <p class="text-muted">Welcome back {{ request.user.first_name }}!</p>
 
-    <!-- Weather Forecast Placeholder -->
+    <!-- Weather forecast -->
+    <form method="POST" class="mb-3"> <!-- dropdown for weather location-->
+        {% csrf_token %}
+        <label for="county">Select County:</label>
+        <select name="county" id="county" class="form-select" onchange="this.form.submit()">
+            {% for county in counties %}
+                <option value="{{ county }}" {% if county == selected_county %}selected{% endif %}>
+                    {{ county }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
     <div class="card mb-4">
-        <div class="card-body">
+        <div class="card-body text-center">
             <h4 class="mb-3">Weekend Weather Forecast</h4>
-            <div id="weather-forecast" class="text-center py-4">
-                <p class="text-muted">Weather forecast will appear here once the API is connected.</p>
-            </div>
+
+            {% if weekend_weather %}
+                <div class="row">
+
+                    <!-- Saturday -->
+                    <div class="col-md-6">
+                        <h5>Saturday</h5>
+                        <p class="mb-1">{{ weekend_weather.saturday.description }}</p>
+                        <p class="text-muted">
+                            {{ weekend_weather.saturday.tmin }}°C → {{ weekend_weather.saturday.tmax }}°C
+                        </p>
+                        <p class="text-muted">
+                            Precipitation: {{ weekend_weather.saturday.precip }} mm
+                        </p>
+                    </div>
+
+                    <!-- Sunday -->
+                    <div class="col-md-6">
+                        <h5>Sunday</h5>
+                        <p class="mb-1">{{ weekend_weather.sunday.description }}</p>
+                        <p class="text-muted">
+                            {{ weekend_weather.sunday.tmin }}°C → {{ weekend_weather.sunday.tmax }}°C
+                        </p>
+                        <p class="text-muted">
+                            Precipitation: {{ weekend_weather.sunday.precip }} mm
+                        </p>
+                    </div>
+
+                </div>
+            {% else %}
+                <p class="text-muted">Weather forecast unavailable.</p>
+            {% endif %}
         </div>
     </div>
+
+
 
     <!-- Renewals Table Partial -->
     <div class="card">

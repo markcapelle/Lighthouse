@@ -11,6 +11,9 @@ from django.utils import timezone
 from datetime import timedelta
 import random
 
+from users.services.weather import get_weekend_forecast, describe
+from users.services.ireland_locations import COUNTY_COORDS
+
 @login_required
 @permission_required("users.view_userprofile", raise_exception=True)
 def user_management(request):
@@ -91,20 +94,31 @@ def dashboard_view(request):
 
     company = request.user.profile.company
 
-    # Base queryset (multi-tenant safe)
-    renewals = Renewal.objects.filter(
-        customer__company=company,
-        product__company=company
-    )
+    # Handle county selection
+    selected_county = request.POST.get("county", "Dublin")
+    lat, lon = COUNTY_COORDS[selected_county]
 
-    # Autofilter: overdue OR due within 7 days
+    weekend_weather = get_weekend_forecast(lat, lon)
+
+    if weekend_weather:
+        for day in weekend_weather.values():
+            day["description"] = describe(day["code"])
+
+    # Renewals
     today = timezone.now().date()
     seven_days = today + timedelta(days=7)
 
-    renewals = renewals.filter(next_renewal_date__lte=seven_days)
+    renewals = Renewal.objects.filter(
+        customer__company=company,
+        product__company=company,
+        next_renewal_date__lte=seven_days
+    )
 
     return render(request, "dashboard.html", {
-        "renewals": renewals
+        "renewals": renewals,
+        "weekend_weather": weekend_weather,
+        "counties": COUNTY_COORDS.keys(),
+        "selected_county": selected_county,
     })
 
 
