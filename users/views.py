@@ -85,9 +85,9 @@ def logout_view(request):
 
 @login_required
 def dashboard_view(request):
-    from renewals.models import Renewal, RenewalStatus
-    from products.models import Product
-    from customers.models import Customer
+    from renewals.models import Renewal
+    from django.utils import timezone
+    from datetime import timedelta
 
     company = request.user.profile.company
 
@@ -97,28 +97,15 @@ def dashboard_view(request):
         product__company=company
     )
 
-    # Filters
-    status_id = request.GET.get("status")
-    product_id = request.GET.get("product")
-    customer_id = request.GET.get("customer")
+    # Autofilter: overdue OR due within 7 days
+    today = timezone.now().date()
+    seven_days = today + timedelta(days=7)
 
-    if status_id:
-        renewals = renewals.filter(status_id=status_id)
+    renewals = renewals.filter(next_renewal_date__lte=seven_days)
 
-    if product_id:
-        renewals = renewals.filter(product_id=product_id)
-
-    if customer_id:
-        renewals = renewals.filter(customer_id=customer_id)
-
-    context = {
-        "statuses": RenewalStatus.objects.all(),
-        "products": Product.objects.filter(company=company),
-        "customers": Customer.objects.filter(company=company),
-        "renewals": renewals,
-    }
-
-    return render(request, "dashboard.html", context)
+    return render(request, "dashboard.html", {
+        "renewals": renewals
+    })
 
 
 

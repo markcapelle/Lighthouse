@@ -17,60 +17,6 @@
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h4 class="mb-3">Filter Renewals</h4>
-
-            <form method="GET">
-                <div class="row">
-
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Status</label>
-                        <select name="status" class="form-select">
-                            <option value="">All</option>
-                            {% for status in statuses %}
-                                <option value="{{ status.id }}"
-                                    {% if request.GET.status == status.id|stringformat:"s" %}selected{% endif %}>
-                                    {{ status.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Product</label>
-                        <select name="product" class="form-select">
-                            <option value="">All</option>
-                            {% for product in products %}
-                                <option value="{{ product.id }}"
-                                    {% if request.GET.product == product.id|stringformat:"s" %}selected{% endif %}>
-                                    {{ product.productname }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Customer</label>
-                        <select name="customer" class="form-select">
-                            <option value="">All</option>
-                            {% for customer in customers %}
-                                <option value="{{ customer.id }}"
-                                    {% if request.GET.customer == customer.id|stringformat:"s" %}selected{% endif %}>
-                                    {{ customer.customername }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                </div>
-
-                <button class="btn btn-primary mt-2">Apply Filters</button>
-            </form>
-        </div>
-    </div>
-
     <!-- Renewals Table Partial -->
     <div class="card">
         <div class="card-body p-0">
@@ -78,7 +24,6 @@
         </div>
     </div>
 </div>
-
 
 
 {% endblock %}
