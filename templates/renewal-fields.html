@@ -1,0 +1,30 @@
+{# Shared field layout for renewal-form.html and renewal-edit.html #}
+{{ form.non_field_errors }}
+
+{% for field in form.visible_fields %}
+    {% if field.name == "next_renewal_date" %}
+        {# Only shown when frequency = Custom (toggled by renewal-form.js) #}
+        <div class="mb-3" id="custom-renewal-date-group" style="display: none;">
+    {% else %}
+        <div class="mb-3">
+    {% endif %}
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+            <div class="text-danger small">{{ field.errors }}</div>
+        {% endif %}
+    </div>
+
+    {% if field.name == "product" %}
+        {# Product details, filled in by JS once a product is selected #}
+        <div class="card bg-light mb-3" id="product-details" style="display: none;">
+            <div class="card-body py-2">
+                <p class="mb-1"><strong>Description:</strong> <span id="product-description"></span></p>
+                <p class="mb-1"><strong>Cost Price:</strong> €<span id="product-costprice"></span></p>
+                <p class="mb-0"><strong>RRP:</strong> €<span id="product-rrp"></span></p>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+
+{{ form.product_data|json_script:"product-data" }}

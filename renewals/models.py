@@ -6,7 +6,6 @@ from dateutil.relativedelta import relativedelta
 from datetime import timedelta
 
 
-
 class RenewalStatus(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -16,35 +15,32 @@ class RenewalStatus(models.Model):
 
 class Renewal(models.Model):
     FREQUENCY_CHOICES = [
-        ("monthly", "Monthly"),
         ("weekly", "Weekly"),
+        ("monthly", "Monthly"),
+        ("annual", "Annual"),
         ("custom", "Custom"),
     ]
 
     renewalname = models.CharField(max_length=255)
-
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     status = models.ForeignKey(RenewalStatus, on_delete=models.CASCADE)
-
     customerprice = models.DecimalField(max_digits=10, decimal_places=2)
-
     startdate = models.DateField()
     next_renewal_date = models.DateField(blank=True, null=True)
-
     frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
-
     createdbyuser = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="renewals_created")
     updatedbyuser = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="renewals_updated")
-
     createdat = models.DateTimeField(auto_now_add=True)
     updatedat = models.DateTimeField(auto_now=True)
 
     def calculate_next_renewal(self):
-        if self.frequency == "monthly":
-            return self.startdate + relativedelta(months=1)
-        elif self.frequency == "weekly":
+        if self.frequency == "weekly":
             return self.startdate + timedelta(weeks=1)
+        elif self.frequency == "monthly":
+            return self.startdate + relativedelta(months=1)
+        elif self.frequency == "annual":
+            return self.startdate + relativedelta(years=1)
         else:
             return self.next_renewal_date  # custom → user sets manually
 

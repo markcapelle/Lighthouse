@@ -1,34 +1,21 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-
 <h2 class="mb-4">
     {{ title }}
 </h2>
 
 <div class="card shadow">
     <div class="card-body">
-
         <form method="POST">
             {% csrf_token %}
-
-            {{ form.non_field_errors }}
-
-            {% for field in form %}
-                <div class="mb-3">
-                    <label class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="text-danger small">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
+            {% include 'renewal-fields.html' %}
 
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="{% url 'renewals' %}" class="btn btn-secondary">Cancel</a>
         </form>
-
     </div>
 </div>
 
+<script src="{% static 'js/renewal-form.js' %}"></script>
 {% endblock %}

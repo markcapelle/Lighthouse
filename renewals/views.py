@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from .models import Renewal
 from .forms import RenewalForm
 
+
 #RENEWAL LIST
 @login_required
 @permission_required("renewals.view_renewal", raise_exception=True)
@@ -23,10 +24,8 @@ def renewal_list(request):
 
     if status_id:
         renewals = renewals.filter(status_id=status_id)
-
     if product_id:
         renewals = renewals.filter(product_id=product_id)
-
     if customer_id:
         renewals = renewals.filter(customer_id=customer_id)
 
@@ -51,8 +50,9 @@ def renewal_list(request):
 @login_required
 @permission_required("renewals.add_renewal", raise_exception=True)
 def renewal_create(request):
+    company = request.user.profile.company
     if request.method == "POST":
-        form = RenewalForm(request.POST)
+        form = RenewalForm(request.POST, company=company)
         if form.is_valid():
             renewal = form.save(commit=False)
             renewal.createdbyuser = request.user
@@ -60,7 +60,7 @@ def renewal_create(request):
             renewal.save()
             return redirect("renewals")
     else:
-        form = RenewalForm()
+        form = RenewalForm(company=company)
 
     return render(request, "renewal-form.html", {"form": form, "title": "New Renewal"})
 
@@ -74,7 +74,6 @@ def renewal_view(request, renewal_id):
         id=renewal_id,
         customer__company=request.user.profile.company
     )
-
     return render(request, "renewal-view.html", {"renewal": renewal})
 
 
@@ -82,14 +81,15 @@ def renewal_view(request, renewal_id):
 @login_required
 @permission_required("renewals.change_renewal", raise_exception=True)
 def renewal_edit(request, renewal_id):
+    company = request.user.profile.company
     renewal = get_object_or_404(
         Renewal,
         id=renewal_id,
-        customer__company=request.user.profile.company
+        customer__company=company
     )
 
     if request.method == "POST":
-        form = RenewalForm(request.POST, instance=renewal)
+        form = RenewalForm(request.POST, instance=renewal, company=company)
         if form.is_valid():
             renewal = form.save(commit=False)
             renewal.updatedbyuser = request.user
@@ -101,7 +101,7 @@ def renewal_edit(request, renewal_id):
 
             return redirect("renewal_view", renewal.id)
     else:
-        form = RenewalForm(instance=renewal)
+        form = RenewalForm(instance=renewal, company=company)
 
     return render(request, "renewal-edit.html", {"form": form, "renewal": renewal})
 
@@ -121,4 +121,3 @@ def renewal_delete(request, renewal_id):
         return redirect("renewals")
 
     return render(request, "renewal-delete.html", {"renewal": renewal})
-
