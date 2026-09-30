@@ -78,3 +78,19 @@ class Renewal(models.Model):
 
     def __str__(self):
         return self.renewalname
+
+
+class RenewalArchive(models.Model):
+    renewalname = models.CharField(max_length=255)
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    status = models.ForeignKey(RenewalStatus, on_delete=models.SET_NULL, null=True)
+    count = models.PositiveIntegerField(default=1)
+    customerprice = models.DecimalField(max_digits=10, decimal_places=2)
+    startdate = models.DateField()
+    next_renewal_date = models.DateField(blank=True, null=True)
+    frequency = models.CharField(max_length=20)
+    archived_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Archived: {self.renewalname} ({self.archived_at})"

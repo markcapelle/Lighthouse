@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import views as auth_views
 from customers.views import customer_list, customer_create, customer_view, customer_edit, customer_delete
 from products.views import product_list, product_create, product_view, product_edit, product_delete
-from renewals.views import renewal_list, renewal_create, renewal_view, renewal_edit, renewal_delete
+from renewals.views import renewal_list, renewal_create, renewal_view, renewal_edit, renewal_delete, renewal_archive_list
 
 from users.views import (
     login_view, logout_view, dashboard_view, register_view, profile_view, edit_profile, user_management, 
@@ -74,4 +74,8 @@ urlpatterns = [
 
     #MFA
     path("mfa-verify/", mfa_verify, name="mfa_verify"),
+
+    #ARCHIVE
+    path("archive/", renewal_archive_list, name="renewal_archive"),
+
 ]

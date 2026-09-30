@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<table class="table table-striped table-hover mb-0" data-sortable>
+    <thead>
+        <tr>
+            <th data-sort="string">Renewal Name</th>
+            <th data-sort="string">Status</th>
+            <th data-sort="string">Product</th>
+            <th data-sort="string">Customer</th>
+            <th data-sort="string">Frequency</th>
+            <th data-sort="date">Original Renewal Date</th>
+            <th data-sort="number">Price</th>
+            <th data-sort="date">Archived At</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for a in archives %}
+        <tr>
+            <!-- Renewal Name -->
+            <td>{{ a.renewalname }}</td>
+
+            <!-- Status -->
+            <td>{{ a.status.name }}</td>
+
+            <!-- Product -->
+            <td>{{ a.product.productname }}</td>
+
+            <!-- Customer -->
+            <td>{{ a.customer.customername }}</td>
+
+            <!-- Frequency -->
+            <td>{{ a.frequency }}</td>
+
+            <!-- Original Next Renewal Date (ISO for sorting) -->
+            <td class="renewal-date"
+                data-date="{{ a.next_renewal_date|date:'c' }}">
+                {{ a.next_renewal_date }}
+            </td>
+
+            <!-- Price -->
+            <td>€{{ a.customerprice }}</td>
+
+            <!-- Archived At -->
+            <td class="renewal-date"
+                data-date="{{ a.archived_at|date:'c' }}">
+                {{ a.archived_at }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

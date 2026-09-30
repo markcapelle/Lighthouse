@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import JsonResponse
 
-from .models import Renewal
+from .models import Renewal, RenewalStatus, RenewalArchive
 from .forms import RenewalForm
 
 # RENEWAL LIST
@@ -92,17 +92,63 @@ def renewal_edit(request, renewal_id):
         if form.is_valid():
             renewal = form.save(commit=False)
             renewal.updatedbyuser = request.user
-            renewal.save()  # auto-calculates customerprice
+
+            rollover_happened = False
+
+            # --- HANDLE CLOSING / ARCHIVING / ROLLOVER ---
+            if renewal.status.name.lower() == "closed":
+                from renewals.models import RenewalArchive
+                from django.utils import timezone
+
+                # Archive snapshot
+                RenewalArchive.objects.create(
+                    renewalname=renewal.renewalname,
+                    customer=renewal.customer,
+                    product=renewal.product,
+                    status=renewal.status,
+                    count=renewal.count,
+                    customerprice=renewal.customerprice,
+                    startdate=renewal.startdate,
+                    next_renewal_date=renewal.next_renewal_date,
+                    frequency=renewal.frequency,
+                )
+
+                # Reset renewal for next cycle
+                today = timezone.now().date()
+                renewal.startdate = today
+
+                if renewal.frequency != "custom":
+                    renewal.next_renewal_date = renewal.calculate_next_renewal()
+                else:
+                    renewal.next_renewal_date = None
+
+                # Set status back to Open
+                active_status = RenewalStatus.objects.get(name="Open")
+                renewal.status = active_status
+
+                rollover_happened = True
+
+            # Save renewal
+            renewal.save()
 
             # AJAX autosave support
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return JsonResponse({"saved": True})
 
-            return redirect("renewal_view", renewal.id)
+            # Redirect logic
+            if rollover_happened:
+                # After closing → go back to edit
+                return redirect("renewal_edit", renewal.id)
+            else:
+                # Normal save → go to view page
+                return redirect("renewal_view", renewal.id)
+
     else:
         form = RenewalForm(instance=renewal, company=company)
 
     return render(request, "renewal-edit.html", {"form": form, "renewal": renewal})
+
+
 
 
 # RENEWAL DELETE
@@ -120,3 +166,14 @@ def renewal_delete(request, renewal_id):
         return redirect("renewals")
 
     return render(request, "renewal-delete.html", {"renewal": renewal})
+
+
+#VIEW ARCHIVE
+@login_required
+@permission_required("renewals.view_renewalarchive", raise_exception=True)
+def renewal_archive_list(request):
+    archives = RenewalArchive.objects.filter(
+        customer__company=request.user.profile.company
+    ).select_related("customer", "product", "status")
+
+    return render(request, "archive.html", {"archives": archives})
