@@ -5,6 +5,8 @@ from django.contrib.auth import views as auth_views
 from customers.views import customer_list, customer_create, customer_view, customer_edit, customer_delete
 from products.views import product_list, product_create, product_view, product_edit, product_delete
 from renewals.views import renewal_list, renewal_create, renewal_view, renewal_edit, renewal_delete, renewal_archive_list
+from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 
 from users.views import (
     login_view, logout_view, dashboard_view, register_view, profile_view, edit_profile, user_management, 
@@ -13,11 +15,17 @@ from users.views import (
     mfa_verify
 )
 
+
+
+
 def index(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
     return render(request, "index.html")
 
+def permission_denied_view(request, exception):
+    messages.error(request, "You do not have permission to perform that action.")
+    return redirect(request.META.get("HTTP_REFERER", "/"))
 
 urlpatterns = [
     #INDEX
@@ -77,5 +85,7 @@ urlpatterns = [
 
     #ARCHIVE
     path("archive/", renewal_archive_list, name="renewal_archive"),
-
 ]
+
+handler403 = "main.urls.permission_denied_view"
+
