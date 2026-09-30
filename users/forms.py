@@ -5,7 +5,9 @@ from .models import Company
 from .country_codes import COUNTRY_CODES
 
 
-
+# ---------------------------------------------------------
+# REGISTRATION FORM
+# ---------------------------------------------------------
 class RegistrationForm(forms.Form):
     email = forms.EmailField()
     password1 = forms.CharField(widget=forms.PasswordInput())
@@ -29,13 +31,9 @@ class RegistrationForm(forms.Form):
 
     def clean_phonenumber(self):
         number = self.cleaned_data["phonenumber"].strip()
-
-        # Remove leading zero
         if number.startswith("0"):
             number = number[1:]
-
         return number
-
 
     def clean(self):
         cleaned_data = super().clean()
@@ -44,7 +42,6 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError("Passwords do not match.")
 
         email = cleaned_data.get("email")
-
         if User.objects.filter(username=email).exists():
             raise forms.ValidationError("Email already exists.")
 
@@ -52,21 +49,41 @@ class RegistrationForm(forms.Form):
 
         if register_type == "new":
             if not cleaned_data.get("company_name"):
-                raise forms.ValidationError(
-                    "Please enter a company name."
-                )
+                raise forms.ValidationError("Please enter a company name.")
 
         elif register_type == "existing":
             if not cleaned_data.get("existing_company"):
-                raise forms.ValidationError(
-                    "Please select an existing company."
-                )
+                raise forms.ValidationError("Please select an existing company.")
 
         return cleaned_data
 
 
+# ---------------------------------------------------------
+# USER SELF-SERVICE PROFILE FORM (normal users)
+# ---------------------------------------------------------
+class UserSelfServiceForm(forms.Form):
+    first_name = forms.CharField(max_length=150)
+    last_name = forms.CharField(max_length=150)
 
-class ProfileForm(forms.Form):
+    countrycode = forms.ChoiceField(choices=COUNTRY_CODES)
+    phonenumber = forms.CharField(max_length=50)
+
+    mfa_enabled = forms.BooleanField(required=False)
+
+    avatar = forms.ImageField(required=False)
+    clear_avatar = forms.BooleanField(required=False)
+
+    def clean_phonenumber(self):
+        number = self.cleaned_data["phonenumber"].strip()
+        if number.startswith("0"):
+            number = number[1:]
+        return number
+
+
+# ---------------------------------------------------------
+# ADMIN PROFILE FORM (admins only)
+# ---------------------------------------------------------
+class AdminProfileForm(forms.Form):
     first_name = forms.CharField(max_length=150)
     last_name = forms.CharField(max_length=150)
     email = forms.EmailField()
@@ -83,16 +100,14 @@ class ProfileForm(forms.Form):
 
     def clean_phonenumber(self):
         number = self.cleaned_data["phonenumber"].strip()
-
         if number.startswith("0"):
             number = number[1:]
-
         return number
 
 
-
-
-#SELF SERVICE PASSWORD CHANGE
+# ---------------------------------------------------------
+# SELF SERVICE PASSWORD CHANGE
+# ---------------------------------------------------------
 class PasswordChangeForm(forms.Form):
     old_password = forms.CharField(widget=forms.PasswordInput())
     password1 = forms.CharField(widget=forms.PasswordInput())
@@ -105,19 +120,18 @@ class PasswordChangeForm(forms.Form):
     def clean(self):
         cleaned = super().clean()
 
-        # Validate old password
-        old_pw = cleaned.get("old_password")
-        if not self.user.check_password(old_pw):
+        if not self.user.check_password(cleaned.get("old_password")):
             raise forms.ValidationError("Old password is incorrect.")
 
-        # Validate new passwords match
         if cleaned.get("password1") != cleaned.get("password2"):
             raise forms.ValidationError("New passwords do not match.")
 
         return cleaned
 
 
-#ADMIN ASSISTED PASSWORD CHANGE
+# ---------------------------------------------------------
+# ADMIN ASSISTED PASSWORD CHANGE
+# ---------------------------------------------------------
 class AdminPasswordChangeForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput())
     password2 = forms.CharField(widget=forms.PasswordInput())
@@ -130,7 +144,9 @@ class AdminPasswordChangeForm(forms.Form):
         return cleaned
 
 
-#ADMIN FORCED PASSWORD CHANGE
+# ---------------------------------------------------------
+# ADMIN FORCED PASSWORD CHANGE
+# ---------------------------------------------------------
 class ForcedPasswordChangeForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput())
     password2 = forms.CharField(widget=forms.PasswordInput())

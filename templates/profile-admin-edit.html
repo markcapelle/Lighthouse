@@ -5,7 +5,7 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
 
-        <h2 class="mb-4">Edit Profile</h2>
+        <h2 class="mb-4">Edit User Profile</h2>
 
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -20,6 +20,12 @@
             <div class="mb-3">
                 <label class="form-label">Last Name</label>
                 {{ form.last_name }}
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                {{ form.email }}
             </div>
 
             <!-- Country Code -->
@@ -52,8 +58,20 @@
                 {{ form.mfa_enabled }}
             </div>
 
+            <!-- Active User -->
+            <div class="mb-3">
+                <label class="form-label">Active User</label>
+                {{ form.is_active }}
+            </div>
+
+            <!-- Group -->
+            <div class="mb-3">
+                <label class="form-label">Role / Group</label>
+                {{ form.group }}
+            </div>
+
             <!-- Change Password -->
-            <a href="{% url 'change_password' %}" class="btn btn-warning mb-3">
+            <a href="{% url 'change_user_password' profile.id %}" class="btn btn-warning mb-3">
                 Change Password
             </a>
 

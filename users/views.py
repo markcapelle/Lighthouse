@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from .models import Company, UserProfile
-from .forms import RegistrationForm, ProfileForm, PasswordChangeForm, AdminPasswordChangeForm, ForcedPasswordChangeForm
+from .forms import RegistrationForm, PasswordChangeForm, AdminPasswordChangeForm, ForcedPasswordChangeForm, UserSelfServiceForm, AdminProfileForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
 from anymail.message import AnymailMessage
@@ -204,22 +204,21 @@ def profile_view(request):
 
 
 
-def edit_profile_common(request, profile, redirect_to_view=True):
-    if request.method == "POST":
-        form = ProfileForm(request.POST, request.FILES)
 
+@login_required
+def edit_profile(request):
+    profile = request.user.profile
+
+    if request.method == "POST":
+        form = UserSelfServiceForm(request.POST, request.FILES)
         if form.is_valid():
             user = profile.user
             user.first_name = form.cleaned_data["first_name"]
             user.last_name = form.cleaned_data["last_name"]
-            user.email = form.cleaned_data["email"]
-            user.username = form.cleaned_data["email"]
 
             profile.countrycode = form.cleaned_data["countrycode"]
             profile.phonenumber = form.cleaned_data["phonenumber"]
             profile.mfa_enabled = form.cleaned_data.get("mfa_enabled", False)
-
-            user.is_active = form.cleaned_data.get("is_active", True)
 
             # Clear avatar
             if form.cleaned_data.get("clear_avatar"):
@@ -233,55 +232,23 @@ def edit_profile_common(request, profile, redirect_to_view=True):
                 )
                 profile.avatar_url = upload["secure_url"]
 
-            # Update user group
-            new_group = form.cleaned_data.get("group")
-            user.groups.clear()
-            if new_group:
-                user.groups.add(new_group)
-
             user.save()
             profile.save()
 
-            return redirect("view_user", profile.id) if redirect_to_view else redirect("profile")
-
-
-        return render(
-            request,
-            "profile-edit.html",
-            {
-                "form": form,
-                "profile": profile,
-            }
-        )
+            return redirect("profile")
 
     else:
-        form = ProfileForm(
-            initial={
-                "first_name": profile.user.first_name,
-                "last_name": profile.user.last_name,
-                "email": profile.user.email,
-                "countrycode": profile.countrycode,
-                "phonenumber": profile.phonenumber,
-                "mfa_enabled": profile.mfa_enabled,
-                "is_active": profile.user.is_active,
-                "group": profile.user.groups.first(),
-            }
-        )
+        form = UserSelfServiceForm(initial={
+            "first_name": profile.user.first_name,
+            "last_name": profile.user.last_name,
+            "email": profile.user.email,
+            "countrycode": profile.countrycode,
+            "phonenumber": profile.phonenumber,
+            "mfa_enabled": profile.mfa_enabled,
+        })
 
-        return render(
-            request,
-            "profile-edit.html",
-            {
-                "form": form,
-                "profile": profile,
-            }
-        )
+    return render(request, "profile-edit.html", {"form": form, "profile": profile})
 
-
-
-@login_required
-def edit_profile(request):
-    return edit_profile_common(request, request.user.profile, redirect_to_view=False)
 
 
 
@@ -307,8 +274,64 @@ def view_user(request, profile_id):
 @login_required
 @permission_required("users.change_userprofile", raise_exception=True)
 def edit_user(request, profile_id):
-    profile = get_object_or_404(UserProfile, id=profile_id, company=request.user.profile.company)
-    return edit_profile_common(request, profile, redirect_to_view=True)
+    profile = get_object_or_404(
+        UserProfile,
+        id=profile_id,
+        company=request.user.profile.company
+    )
+
+    if request.method == "POST":
+        form = AdminProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = profile.user
+            user.first_name = form.cleaned_data["first_name"]
+            user.last_name = form.cleaned_data["last_name"]
+
+            user.email = form.cleaned_data["email"]
+            user.username = form.cleaned_data["email"]
+
+            profile.countrycode = form.cleaned_data["countrycode"]
+            profile.phonenumber = form.cleaned_data["phonenumber"]
+            profile.mfa_enabled = form.cleaned_data.get("mfa_enabled", False)
+
+            user.is_active = form.cleaned_data.get("is_active", True)
+
+            # Update user group
+            new_group = form.cleaned_data.get("group")
+            user.groups.clear()
+            if new_group:
+                user.groups.add(new_group)
+
+            # Clear avatar
+            if form.cleaned_data.get("clear_avatar"):
+                profile.avatar_url = None
+
+            # Upload avatar
+            if form.cleaned_data.get("avatar"):
+                upload = cloudinary.uploader.upload(
+                    form.cleaned_data["avatar"],
+                    folder="avatars"
+                )
+                profile.avatar_url = upload["secure_url"]
+
+            user.save()
+            profile.save()
+
+            return redirect("view_user", profile.id)
+
+    else:
+        form = AdminProfileForm(initial={
+            "first_name": profile.user.first_name,
+            "last_name": profile.user.last_name,
+            "email": profile.user.email,
+            "countrycode": profile.countrycode,
+            "phonenumber": profile.phonenumber,
+            "mfa_enabled": profile.mfa_enabled,
+            "is_active": profile.user.is_active,
+            "group": profile.user.groups.first(),
+        })
+
+    return render(request, "profile-admin-edit.html", {"form": form, "profile": profile})
 
 
 
