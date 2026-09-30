@@ -3,10 +3,10 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Customer
 from .forms import CustomerForm
+from renewals.models import Renewal
 
 
-
-
+#CUSTOMER LIST
 @login_required
 @permission_required("customers.view_customer", raise_exception=True)
 def customer_list(request):
@@ -23,6 +23,8 @@ def customer_list(request):
         }
     )
 
+
+#CUSTOMER CREATE
 @login_required
 @permission_required("customers.add_customer", raise_exception=True)
 def customer_create(request):
@@ -57,6 +59,7 @@ def customer_create(request):
     )
 
 
+#CUSTOMER VIEW
 @login_required
 @permission_required("customers.view_customer", raise_exception=True)
 def customer_view(request, customer_id):
@@ -65,10 +68,20 @@ def customer_view(request, customer_id):
         id=customer_id,
         company=request.user.profile.company
     )
-    return render(request, "customer-view.html", {"customer": customer})
+
+    # Filter renewals for this customer
+    renewals = Renewal.objects.filter(
+        customer=customer,
+        product__company=request.user.profile.company
+    ).select_related("product", "status")
+
+    return render(request, "customer-view.html", {
+        "customer": customer,
+        "renewals": renewals
+    })
 
 
-
+#CUSTOMER EDIT
 @login_required
 @permission_required("customers.change_customer", raise_exception=True)
 def customer_edit(request, customer_id):
@@ -95,6 +108,7 @@ def customer_edit(request, customer_id):
     )
 
 
+#CUSTOMER DELETE
 @login_required
 @permission_required("customers.delete_customer", raise_exception=True)
 def customer_delete(request, customer_id):
