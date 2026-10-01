@@ -405,7 +405,7 @@ def change_user_password(request, profile_id):
     )
 
     if request.method == "POST":
-        form = AdminPasswordChangeForm(request.POST)
+        form = AdminPasswordChangeForm(profile.user, request.POST)
         if form.is_valid():
             new_pw = form.cleaned_data["password1"]
             profile.user.set_password(new_pw)
@@ -476,7 +476,7 @@ def forced_password_change(request):
         return redirect("dashboard")
 
     if request.method == "POST":
-        form = ForcedPasswordChangeForm(request.POST)
+        form = ForcedPasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             new_pw = form.cleaned_data["password1"]
             request.user.set_password(new_pw)

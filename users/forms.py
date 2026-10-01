@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate
 from .models import Company
 from .country_codes import COUNTRY_CODES
+from django.contrib.auth.password_validation import validate_password
 
 
 # ---------------------------------------------------------
@@ -40,6 +41,11 @@ class RegistrationForm(forms.Form):
 
         if cleaned_data.get("password1") != cleaned_data.get("password2"):
             raise forms.ValidationError("Passwords do not match.")
+
+        email = cleaned_data.get("email")
+        pw = cleaned_data.get("password1")
+        if pw:
+            validate_password(pw, user=User(username=email or "", email=email or ""))
 
         email = cleaned_data.get("email")
         if User.objects.filter(username=email).exists():
@@ -125,6 +131,9 @@ class PasswordChangeForm(forms.Form):
 
         if cleaned.get("password1") != cleaned.get("password2"):
             raise forms.ValidationError("New passwords do not match.")
+        
+        if cleaned.get("password1"):
+            validate_password(cleaned["password1"], self.user)
 
         return cleaned
 
@@ -137,10 +146,16 @@ class AdminPasswordChangeForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput())
     force_change = forms.BooleanField(required=False, label="Force user to change password on next login")
 
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
     def clean(self):
         cleaned = super().clean()
         if cleaned.get("password1") != cleaned.get("password2"):
             raise forms.ValidationError("Passwords do not match.")
+        if cleaned.get("password1"):
+            validate_password(cleaned["password1"], self.user)
         return cleaned
 
 
@@ -151,8 +166,15 @@ class ForcedPasswordChangeForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput())
     password2 = forms.CharField(widget=forms.PasswordInput())
 
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
     def clean(self):
         cleaned = super().clean()
         if cleaned.get("password1") != cleaned.get("password2"):
             raise forms.ValidationError("Passwords do not match.")
+        if cleaned.get("password1"):
+            validate_password(cleaned["password1"], self.user)
         return cleaned
+    
