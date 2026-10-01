@@ -6,6 +6,7 @@ from users.country_codes import COUNTRY_CODES
 class CustomerForm(forms.ModelForm):
 
     countrycode = forms.ChoiceField(choices=COUNTRY_CODES)
+    phonenumber = forms.CharField(required=True)
 
     class Meta:
         model = Customer
@@ -18,6 +19,12 @@ class CustomerForm(forms.ModelForm):
             "phonenumber",
             "notes",
         ]
+
+        error_messages = {
+            "phonenumber": {
+                "required": "Please enter a phone number."
+            }
+        }
 
         widgets = {
             "customername": forms.TextInput(attrs={"class": "form-control"}),
