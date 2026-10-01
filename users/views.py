@@ -388,7 +388,8 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user)
 
-    return render(request, "password-change.html", {"form": form, "profile": profile})
+    return render(request, "password-change-self.html", {"form": form, "profile": profile})
+
 
 
 
@@ -419,7 +420,8 @@ def change_user_password(request, profile_id):
     else:
         form = AdminPasswordChangeForm()
 
-    return render(request, "password-change.html", {"form": form, "profile": profile})
+    return render(request, "password-change-admin.html", {"form": form, "profile": profile})
+
 
 
 
