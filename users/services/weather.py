@@ -1,7 +1,16 @@
 import requests
 from datetime import datetime, timedelta
 
+_cached_weather = None
+_cached_at = None
+
 def get_weekend_forecast(lat, lon):
+    global _cached_weather, _cached_at
+
+    # Cache for 30 minutes
+    if _cached_at and datetime.now() - _cached_at < timedelta(minutes=30):
+        return _cached_weather
+
     url = (
         f"https://api.open-meteo.com/v1/forecast?"
         f"latitude={lat}&longitude={lon}"
@@ -49,11 +58,16 @@ def get_weekend_forecast(lat, lon):
                     "precip": precip[i],
                 }
 
+        # Save cache
+        _cached_weather = weekend
+        _cached_at = datetime.now()
+
         return weekend
 
     except Exception as e:
         print("Weather fetch error:", e)
-        return None
+        return _cached_weather  # fallback to last known good value
+
 
 
 
