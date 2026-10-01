@@ -411,16 +411,17 @@ def change_user_password(request, profile_id):
             profile.user.set_password(new_pw)
             profile.user.save()
 
-            # NEW: force password change flag
             if form.cleaned_data.get("force_change"):
                 profile.force_password_change = True
                 profile.save()
 
             return redirect("view_user", profile.id)
+
     else:
-        form = AdminPasswordChangeForm()
+        form = AdminPasswordChangeForm(profile.user)
 
     return render(request, "password-change-admin.html", {"form": form, "profile": profile})
+
 
 
 
@@ -491,9 +492,10 @@ def forced_password_change(request):
 
             return redirect("dashboard")
     else:
-        form = ForcedPasswordChangeForm()
+        form = ForcedPasswordChangeForm(request.user)
 
     return render(request, "password-change-forced.html", {"form": form})
+
 
 
 #MFA VERIFICATION
