@@ -1,5 +1,8 @@
-/* --- Shared tab-style navbar --- */
+/* ========================================================== */
+/* NAV BAR */
+/* ========================================================== */
 
+/* --- Shared tab-style navbar --- */
 .nav-tabs .nav-link {
     color: #ffffff;                       /* Visible text */
     background-color: rgba(255,255,255,0.20); /* Light translucent tab */
@@ -22,8 +25,75 @@
     border-color: #ffffff;
 }
 
+/* Make user dropdown float over navbar instead of expanding it */
+.navbar-nav .dropdown-menu {
+    position: absolute !important;
+    top: 100%;
+    right: 0;
+    left: auto;
+    z-index: 2000;
+}
 
 
+
+/* Floating collapsed tab menu */
+#tabMenu {
+    position: absolute;
+    top: 56px; /* height of navbar */
+    left: 0;
+    width: 100%;
+    z-index: 2000;
+}
+
+#tabMenu .nav-link {
+    background: rgba(255,255,255,0.20);
+    color: #fff;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+#tabMenu .nav-link:hover {
+    background: #fff;
+    color: #0d6efd;
+}
+
+
+
+
+/* ========================================================== */
+/* UNIVERSAL RESPONSIVE TABLE COLUMN PRIORITY SYSTEM */
+/* ========================================================== */
+
+/* Priority 4: hide earliest (least important) */
+@media (max-width: 1200px) {
+    .col-priority-4 {
+        display: none !important;
+    }
+}
+
+/* Priority 3: hide next */
+@media (max-width: 992px) {
+    .col-priority-3 {
+        display: none !important;
+    }
+}
+
+/* Priority 2: hide on mobile */
+@media (max-width: 768px) {
+    .col-priority-2 {
+        display: none !important;
+    }
+}
+
+/* Priority 1: always visible */
+.col-priority-1 {
+    display: table-cell;
+}
+
+
+
+/* ========================================================== */
+/* ========================================================== */
 
 /* UPCOMING/OVERDUE NOTIFICATION */
 .renewal-warning > td {
@@ -34,3 +104,39 @@
     background-color: #f8d7da !important; /* red */
 }
 
+
+/* ========================================================== */
+/* ========================================================== */
+
+
+/* LOGO SIZE ON MOBILE */
+@media (max-width: 576px) {
+    .navbar-brand img {
+        height: 32px !important;
+    }
+}
+
+
+/* MOBILE PADDING */
+@media (max-width: 768px) {
+    main.container-fluid {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+
+@media (max-width: 576px) {
+    .nav-tabs .nav-link {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+}
+
+
+
+@media (max-width: 576px) {
+    footer .container {
+        font-size: 0.8rem;
+    }
+}

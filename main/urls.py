@@ -23,14 +23,18 @@ def index(request):
         return redirect("dashboard")
     return render(request, "index.html")
 
+def help_page(request):
+    return render(request, "help.html")
+
 def permission_denied_view(request, exception):
     messages.error(request, "You do not have permission to perform that action.")
     return redirect(request.META.get("HTTP_REFERER", "/"))
 
 urlpatterns = [
-    #INDEX
+    #WEB
     path('', index, name='index'),
     path('index/', index, name='index_page'),
+    path('help/', help_page, name='help_page'),
 
     #LOGIN/LOGOUT
     path('login/', login_view, name='login'),

@@ -63,8 +63,7 @@ class Renewal(models.Model):
             return self.next_renewal_date  # custom → user sets manually
 
     def calculate_customer_price(self):
-        # Uses product.costprice — change to product.rrp if needed
-        return self.product.costprice * self.count
+        return self.product.rrp * self.count
 
     def save(self, *args, **kwargs):
         # Auto-calc renewal date

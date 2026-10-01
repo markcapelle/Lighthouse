@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="text-center py-5">
+<div class="row justify-content-center py-5">
+    <div class="col-12 col-md-8 text-center">
+        <h1 class="display-4 mb-4">Welcome to Lighthouse</h1>
+        <p class="lead mb-5">Your unified customer support and renewals platform.</p>
 
-    <h1 class="display-4 mb-4">Welcome to Lighthouse</h1>
-    <p class="lead mb-5">Your unified customer support and renewals platform.</p>
-
-    <a href="/login" class="btn btn-primary btn-lg me-3">Login</a>
-    <a href="/register" class="btn btn-outline-primary btn-lg">Register</a>
-
+        <a href="/login" class="btn btn-primary btn-lg me-3 mb-3">Login</a>
+        <a href="/register" class="btn btn-outline-primary btn-lg mb-3">Register</a>
+    </div>
 </div>
 {% endblock %}
