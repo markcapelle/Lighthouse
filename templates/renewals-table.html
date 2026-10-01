@@ -3,13 +3,13 @@
     <table class="table table-striped table-hover mb-0" data-sortable>
         <thead>
             <tr>
-                <th data-sort="string">Renewal Name</th>
-                <th data-sort="string">Status</th>
-                <th data-sort="string">Product</th>
-                <th data-sort="string">Customer</th>
-                <th data-sort="string">Frequency</th>
-                <th data-sort="date">Next Renewal</th>
-                <th data-sort="number">Price</th>
+                <th data-sort="string" class="col-priority-1">Renewal Name</th>
+                <th data-sort="string" class="col-priority-1">Status</th>
+                <th data-sort="string" class="col-priority-3">Product</th>
+                <th data-sort="string" class="col-priority-2">Customer</th>
+                <th data-sort="string" class="col-priority-2">Frequency</th>
+                <th data-sort="date" class="col-priority-1">Next Renewal</th>
+                <th data-sort="number" class="col-priority-3">Price</th>
             </tr>
         </thead>
 
@@ -17,32 +17,32 @@
             {% for r in renewals %}
             <tr>
                 <!-- Renewal Name -->
-                <td>
+                <td class="col-priority-1">
                     <a href="{% url 'renewal_view' r.id %}" class="btn btn-outline-primary btn-sm">
                         {{ r.renewalname }}
                     </a>
                 </td>
 
                 <!-- Status -->
-                <td>{{ r.status.name }}</td>
+                <td class="col-priority-1">{{ r.status.name }}</td>
 
                 <!-- Product -->
-                <td>{{ r.product.productname }}</td>
+                <td class="col-priority-3">{{ r.product.productname }}</td>
 
                 <!-- Customer -->
-                <td>{{ r.customer.customername }}</td>
+                <td class="col-priority-2">{{ r.customer.customername }}</td>
 
                 <!-- Frequency -->
-                <td>{{ r.frequency }}</td>
+                <td class="col-priority-2">{{ r.frequency }}</td>
 
                 <!-- Next Renewal (ISO for sorting) -->
                 <td class="renewal-date"
-                    data-date="{{ r.next_renewal_date|date:'c' }}">
+                    data-date="{{ r.next_renewal_date|date:'c' }}" class="col-priority-1">
                     {{ r.next_renewal_date }}
                 </td>
 
                 <!-- Price -->
-                <td>€{{ r.customerprice }}</td>
+                <td class="col-priority-3">€{{ r.customerprice }}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -13,41 +13,32 @@
 </div>
 
 
-<div class="card shadow">
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
+<div class="card shadow table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="col-priority-1">Name</th>
+                <th class="col-priority-4">Contact</th>
+                <th class="col-priority-2">Email</th>
+                <th class="col-priority-1">Phone</th>
+            </tr>
+        </thead>
 
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Contact</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-            {% for customer in customers %}
-
-                <tr>
-                    <td>
-                        <a href="{% url 'customer_view' customer.id %}" class="btn btn-outline-primary btn-sm">
-                            {{ customer.customername }}
-                        </a>
-                    </td>
-                    <td>{{ customer.maincontactname }}</td>
-                    <td>{{ customer.maincontactemail }}</td>
-                    <td>{{ customer.phonenumber }}</td>
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
+        <tbody>
+        {% for customer in customers %}
+            <tr>
+                <td class="col-priority-1">
+                    <a href="{% url 'customer_view' customer.id %}" class="btn btn-outline-primary btn-sm">
+                        {{ customer.customername }}
+                    </a>
+                </td>
+                <td class="col-priority-4">{{ customer.maincontactname }}</td>
+                <td class="col-priority-2">{{ customer.maincontactemail }}</td>
+                <td class="col-priority-1">{{ customer.phonenumber }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}

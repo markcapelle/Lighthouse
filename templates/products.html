@@ -6,32 +6,31 @@
     <a href="{% url 'product_create' %}" class="btn btn-primary">New Product</a>
 </div>
 
-<div class="card shadow">
-<div class="table-responsive">
-<table class="table table-striped table-hover">
-<thead>
-<tr>
-    <th>Name</th>
-    <th>Code</th>
-    <th>Cost</th>
-    <th>RRP</th>
-</tr>
-</thead>
-<tbody>
-{% for product in products %}
-<tr>
-<td>
-    <a href="{% url 'product_view' product.id %}" class="btn btn-outline-primary btn-sm">
-        {{ product.productname }}
-    </a>
-</td>
-<td>{{ product.productcode }}</td>
-<td>€{{ product.costprice }}</td>
-<td>€{{ product.rrp }}</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-</div>
+<div class="card shadow table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="col-priority-1">Name</th>
+                <th class="col-priority-3">Code</th>
+                <th class="col-priority-2">Cost</th>
+                <th class="col-priority-1">RRP</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td class="col-priority-1">
+                    <a href="{% url 'product_view' product.id %}" class="btn btn-outline-primary btn-sm">
+                        {{ product.productname }}
+                    </a>
+                </td>
+                <td class="col-priority-3">{{ product.productcode }}</td>
+                <td class="col-priority-2">€{{ product.costprice }}</td>
+                <td class="col-priority-1">€{{ product.rrp }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
