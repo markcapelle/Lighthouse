@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Lighthouse</title>
 
     {% load static %}
@@ -25,7 +27,7 @@
     {% include 'nav.html' %}
 
 
-    <main class="container py-4 flex-grow-1">
+    <main class="container-fluid py-4 flex-grow-1">
 
         {% if messages %}
             {% for message in messages %}

@@ -1,51 +1,51 @@
 {% load static %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover mb-0" data-sortable>
+        <thead>
+            <tr>
+                <th data-sort="string">Renewal Name</th>
+                <th data-sort="string">Status</th>
+                <th data-sort="string">Product</th>
+                <th data-sort="string">Customer</th>
+                <th data-sort="string">Frequency</th>
+                <th data-sort="date">Next Renewal</th>
+                <th data-sort="number">Price</th>
+            </tr>
+        </thead>
 
-<table class="table table-striped table-hover mb-0" data-sortable>
-    <thead>
-        <tr>
-            <th data-sort="string">Renewal Name</th>
-            <th data-sort="string">Status</th>
-            <th data-sort="string">Product</th>
-            <th data-sort="string">Customer</th>
-            <th data-sort="string">Frequency</th>
-            <th data-sort="date">Next Renewal</th>
-            <th data-sort="number">Price</th>
-        </tr>
-    </thead>
+        <tbody>
+            {% for r in renewals %}
+            <tr>
+                <!-- Renewal Name -->
+                <td>
+                    <a href="{% url 'renewal_view' r.id %}" class="btn btn-outline-primary btn-sm">
+                        {{ r.renewalname }}
+                    </a>
+                </td>
 
-    <tbody>
-        {% for r in renewals %}
-        <tr>
-            <!-- Renewal Name -->
-            <td>
-                <a href="{% url 'renewal_view' r.id %}" class="btn btn-outline-primary btn-sm">
-                    {{ r.renewalname }}
-                </a>
-            </td>
+                <!-- Status -->
+                <td>{{ r.status.name }}</td>
 
-            <!-- Status -->
-            <td>{{ r.status.name }}</td>
+                <!-- Product -->
+                <td>{{ r.product.productname }}</td>
 
-            <!-- Product -->
-            <td>{{ r.product.productname }}</td>
+                <!-- Customer -->
+                <td>{{ r.customer.customername }}</td>
 
-            <!-- Customer -->
-            <td>{{ r.customer.customername }}</td>
+                <!-- Frequency -->
+                <td>{{ r.frequency }}</td>
 
-            <!-- Frequency -->
-            <td>{{ r.frequency }}</td>
+                <!-- Next Renewal (ISO for sorting) -->
+                <td class="renewal-date"
+                    data-date="{{ r.next_renewal_date|date:'c' }}">
+                    {{ r.next_renewal_date }}
+                </td>
 
-            <!-- Next Renewal (ISO for sorting) -->
-            <td class="renewal-date"
-                data-date="{{ r.next_renewal_date|date:'c' }}">
-                {{ r.next_renewal_date }}
-            </td>
-
-            <!-- Price -->
-            <td>€{{ r.customerprice }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
+                <!-- Price -->
+                <td>€{{ r.customerprice }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 <script src="{% static 'js/renewals.js' %}"></script>

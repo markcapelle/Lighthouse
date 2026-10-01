@@ -34,3 +34,37 @@
     background-color: #f8d7da !important; /* red */
 }
 
+
+
+
+/* LOGO SIZE ON MOBILE */
+@media (max-width: 576px) {
+    .navbar-brand img {
+        height: 32px !important;
+    }
+}
+
+
+/* MOBILE PADDING */
+@media (max-width: 768px) {
+    main.container-fluid {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+
+@media (max-width: 576px) {
+    .nav-tabs .nav-link {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+}
+
+
+
+@media (max-width: 576px) {
+    footer .container {
+        font-size: 0.8rem;
+    }
+}
