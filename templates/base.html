@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Lighthouse</title>
 
     {% load static %}
@@ -25,7 +27,7 @@
     {% include 'nav.html' %}
 
 
-    <main class="container py-4 flex-grow-1">
+    <main class="container-fluid py-4 flex-grow-1">
 
         {% if messages %}
             {% for message in messages %}
@@ -50,5 +52,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/nav-behavior.js' %}"></script>
+
 </body>
 </html>

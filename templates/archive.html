@@ -2,55 +2,56 @@
 {% load static %}
 {% block content %}
 
-<table class="table table-striped table-hover mb-0" data-sortable>
-    <thead>
-        <tr>
-            <th data-sort="string">Renewal Name</th>
-            <th data-sort="string">Status</th>
-            <th data-sort="string">Product</th>
-            <th data-sort="string">Customer</th>
-            <th data-sort="string">Frequency</th>
-            <th data-sort="date">Original Renewal Date</th>
-            <th data-sort="number">Price</th>
-            <th data-sort="date">Archived At</th>
-        </tr>
-    </thead>
+<div class="table-responsive">
+    <table class="table table-striped table-hover mb-0" data-sortable>
+        <thead>
+            <tr>
+                <th data-sort="string" class="col-priority-1">Renewal Name</th>
+                <th data-sort="string" class="col-priority-4">Status</th>
+                <th data-sort="string" class="col-priority-3">Product</th>
+                <th data-sort="string" class="col-priority-2">Customer</th>
+                <th data-sort="string" class="col-priority-4">Frequency</th>
+                <th data-sort="date" class="col-priority-2">Original Renewal Date</th>
+                <th data-sort="number" class="col-priority-3">Price</th>
+                <th data-sort="date" class="col-priority-1">Archived At</th>
+            </tr>
+        </thead>
 
-    <tbody>
-        {% for a in archives %}
-        <tr>
-            <!-- Renewal Name -->
-            <td>{{ a.renewalname }}</td>
+        <tbody>
+            {% for a in archives %}
+            <tr>
+                <!-- Renewal Name -->
+                <td class="col-priority-1">{{ a.renewalname }}</td>
 
-            <!-- Status -->
-            <td>{{ a.status.name }}</td>
+                <!-- Status -->
+                <td class="col-priority-4">{{ a.status.name }}</td>
 
-            <!-- Product -->
-            <td>{{ a.product.productname }}</td>
+                <!-- Product -->
+                <td class="col-priority-3">{{ a.product.productname }}</td>
 
-            <!-- Customer -->
-            <td>{{ a.customer.customername }}</td>
+                <!-- Customer -->
+                <td class="col-priority-2">{{ a.customer.customername }}</td>
 
-            <!-- Frequency -->
-            <td>{{ a.frequency }}</td>
+                <!-- Frequency -->
+                <td class="col-priority-4">{{ a.frequency }}</td>
 
-            <!-- Original Next Renewal Date (ISO for sorting) -->
-            <td class="renewal-date"
-                data-date="{{ a.next_renewal_date|date:'c' }}">
-                {{ a.next_renewal_date }}
-            </td>
+                <!-- Original Next Renewal Date (ISO for sorting) -->
+                <td class="renewal-date col-priority-2"
+                    data-date="{{ a.next_renewal_date|date:'c' }}">
+                    {{ a.next_renewal_date }}
+                </td>
 
-            <!-- Price -->
-            <td>€{{ a.customerprice }}</td>
+                <!-- Price -->
+                <td class="col-priority-3">€{{ a.customerprice }}</td>
 
-            <!-- Archived At -->
-            <td class="renewal-date"
-                data-date="{{ a.archived_at|date:'c' }}">
-                {{ a.archived_at }}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
+                <!-- Archived At -->
+                <td class="renewal-date"
+                    data-date="{{ a.archived_at|date:'c' }}" class="col-priority-1">
+                    {{ a.archived_at }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
