@@ -60,12 +60,40 @@
 
 
 
+/* ========================================================== */
+/* UNIVERSAL RESPONSIVE TABLE COLUMN PRIORITY SYSTEM */
+/* ========================================================== */
+
+/* Priority 4: hide earliest (least important) */
+@media (max-width: 1200px) {
+    .col-priority-4 {
+        display: none !important;
+    }
+}
+
+/* Priority 3: hide next */
+@media (max-width: 992px) {
+    .col-priority-3 {
+        display: none !important;
+    }
+}
+
+/* Priority 2: hide on mobile */
+@media (max-width: 768px) {
+    .col-priority-2 {
+        display: none !important;
+    }
+}
+
+/* Priority 1: always visible */
+.col-priority-1 {
+    display: table-cell;
+}
+
+
 
 /* ========================================================== */
 /* ========================================================== */
-
-
-
 
 /* UPCOMING/OVERDUE NOTIFICATION */
 .renewal-warning > td {
@@ -77,6 +105,8 @@
 }
 
 
+/* ========================================================== */
+/* ========================================================== */
 
 
 /* LOGO SIZE ON MOBILE */
