@@ -8,20 +8,21 @@
             <img src="{% static 'img/logo.png' %}" alt="Logo" style="height:50px;" class="mx-3">
         </a>
 
-        <!-- Hamburger toggler (controls ONLY the tabs now) -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#tabNav" aria-controls="tabNav" aria-expanded="false"
+        <!-- Hamburger toggler (controls floating mobile menu) -->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#tabMenu"
+                aria-controls="tabMenu"
+                aria-expanded="false"
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- COLLAPSIBLE TABS ONLY -->
-        <div class="collapse navbar-collapse" id="tabNav">
-
-            <ul class="nav nav-tabs flex-wrap border-0 me-auto mt-2 mt-lg-0">
+        <!-- DESKTOP TABS (visible only on lg+) -->
+        <div class="d-none d-lg-block ms-3">
+            <ul class="nav nav-tabs border-0">
 
                 {% if not request.user.is_authenticated %}
-                    <!-- PUBLIC NAV -->
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
                     </li>
@@ -31,7 +32,6 @@
                     </li>
 
                 {% else %}
-                    <!-- APP NAV -->
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
                     </li>
@@ -50,7 +50,6 @@
                 {% endif %}
 
             </ul>
-
         </div>
 
         <!-- ALWAYS-VISIBLE USER MENU -->
@@ -90,3 +89,37 @@
 
     </div>
 </nav>
+
+<!-- MOBILE FLOATING MENU -->
+<div class="collapse d-lg-none" id="tabMenu">
+    <ul class="nav flex-column bg-primary p-2 shadow rounded-bottom">
+
+        {% if not request.user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/help' %}active{% endif %}" href="/help">Help</a>
+            </li>
+
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/renewals' %}active{% endif %}" href="/renewals">Renewals</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/products' %}active{% endif %}" href="/products">Products</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/customers' %}active{% endif %}" href="/customers">Customers</a>
+            </li>
+        {% endif %}
+
+    </ul>
+</div>

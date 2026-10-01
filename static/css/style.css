@@ -36,6 +36,26 @@
 
 
 
+/* Floating collapsed tab menu */
+#tabMenu {
+    position: absolute;
+    top: 56px; /* height of navbar */
+    left: 0;
+    width: 100%;
+    z-index: 2000;
+}
+
+#tabMenu .nav-link {
+    background: rgba(255,255,255,0.20);
+    color: #fff;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+#tabMenu .nav-link:hover {
+    background: #fff;
+    color: #0d6efd;
+}
 
 
 
