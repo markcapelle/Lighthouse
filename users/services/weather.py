@@ -7,8 +7,8 @@ _cached_at = None
 def get_weekend_forecast(lat, lon):
     global _cached_weather, _cached_at
 
-    # Cache for 30 minutes
-    if _cached_at and datetime.now() - _cached_at < timedelta(minutes=30):
+    # Cache for x minutes
+    if _cached_at and datetime.now() - _cached_at < timedelta(minutes=5):
         return _cached_weather
 
     url = (
