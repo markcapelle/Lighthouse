@@ -1,62 +1,159 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
 <div class="row justify-content-center">
     <div class="col-md-8">
 
-        <h2 class="mb-4">Help & Support</h2>
+        <h1 id="top" class="mb-4">Help</h1>
 
-        <div class="card shadow">
-            <div class="card-body">
+        <!-- Table of Contents -->
+        <section class="mb-4">
+            <h2>Contents</h2>
+            <div id="toc"></div>
+        </section>
 
-                <p class="text-muted">
-                    Welcome to the Lighthouse Helpdesk help section. Here you’ll find guidance on using the platform,
-                    managing customers, products, renewals, and your user profile.
-                </p>
 
-                <hr>
-
-                <h4 class="mt-3">Getting Started</h4>
-                <p>
-                    After logging in, use the navigation bar at the top to access your Dashboard, Renewals, Products,
-                    and Customers. Each section provides tools to manage your company’s data.
-                </p>
-
-                <h4 class="mt-4">Managing Customers</h4>
-                <p>
-                    Go to <strong>Customers</strong> to add, edit, or view customer details. Each customer page also
-                    shows all renewals linked to that customer.
-                </p>
-
-                <h4 class="mt-4">Managing Products</h4>
-                <p>
-                    The <strong>Products</strong> section lets you maintain your product catalogue, including cost,
-                    RRP, and descriptions. Product details automatically appear when creating or editing renewals.
-                </p>
-
-                <h4 class="mt-4">Renewals</h4>
-                <p>
-                    The <strong>Renewals</strong> page lists all active renewals. You can create new renewals, edit
-                    existing ones, and archive completed or cancelled renewals.
-                </p>
-
-                <h4 class="mt-4">User Profile & MFA</h4>
-                <p>
-                    Visit <strong>Profile</strong> to update your personal details, phone number, avatar, and MFA
-                    settings. Administrators can manage users and reset passwords.
-                </p>
-
-                <h4 class="mt-4">Need More Help?</h4>
-                <p>
-                    Contact your company administrator or reach out via the <strong>Support</strong> link in the
-                    footer.
-                </p>
-
+        <!-- Creating New UserID -->
+        <section id="creating-userid" class="mb-5">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2>Creating New UserID</h2>
+                    <p>Users on-boarding is done in one two ways.</p>
+                    <p>A new user with a new company/tenant.</p>
+                    <p>A new user joining an existing company.</p>
+                    <hr>
+                    <h3>New Company</h3>
+                    <p>When a new user is created with a new company, they automatically are enabled and become the administrator of that company, from where they can begin approving any new users joining the company.</p>
+                    <p>On the Lighthouse home page, click ‘Register.’</p>
+                    <p>Input all the important user detail. The email address doubles as the username.</p>
+                    <p>Set ‘Registration Type’ to ‘Create New Company’</p>
+                    <p>Give your new company a name.</p>
+                    <p>Once you click ‘Register’ the new company will be created along with your userID with the administrator role for that new company. You’ll be able to access the ‘Manage Users’ interface to see all the other users in the company as they enrol themselves and approve or delete them.</p>
+                    <br>
+                    <h3>Existing Company</h3>
+                    <p>When a new user is created joining a company, they will not be able to login until an administrator has approved them.</p>
+                    <p>On the Lighthouse home page, click ‘Register.’</p>
+                    <p>Input all the important user detail. The email address doubles as the username.</p>
+                    <p>Set ‘Registration Type’ to ‘Join Existing Company.’</p>
+                    <p>Select the company you want to join from the drop down list.</p>
+                    <p>Once registration is complete, wait for an administrator to activate your account before logging in.</p>
+                    <br>
+                    <h3>Approving a New User as Administrator</h3>
+                    <p>Logged into Lighthouse as an administrator, click your user icon at the top right and select ‘Manage Users.’ Here you can view, edit and delete all of the users in your company.</p>
+                    <p>‘View’ will show whether the user is active or not.</p>
+                    <p>Select ‘edit’ and complete the user profile. Select ‘active user’ and assign the user a role.</p>
+                    <p>Once active, the user will be able to login.</p>
+                </div>
             </div>
-        </div>
+            <a href="#top" class="d-block mt-2">Back to top</a>
+        </section>
+
+        <!-- Forgotten Password -->
+        <section id="forgotten-password" class="mb-5">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2>Forgotten Password</h2>
+                    <p>Any user that has forgotten their password can click on ‘forgot password’ on the login page.</p>
+                    <p>There are two methods of resetting the password. The user can input their email address and have a password reset link sent to them. Or they can have the system send a notification to their company administrator for assistance.</p>
+                    <hr>
+                    <h3>Self Service</h3>
+                    <p>The user inputs their email in the form and clicks ‘Send Reset Link.’</p>
+                    <p>They will receive an email in their inbox shortly (be sure to check junk) with a link to reset their password to something new.</p>
+                    <p>They can then login again.</p>
+                    <br>
+                    <h3>Admin Assistance</h3>
+                    <p>If the user does not have access to their email for whatever reason, they can input their email in the form and instead click ‘Contact Administrator.’</p>
+                    <p>Lighthouse will send a message to all of your company admins informing them you need assistance with a password change. From here the administrator can use user management permissions to change your password and can contact you directly with the new password.</p>
+                    <br>
+                    <h3>Change Password at Next Login</h3>
+                    <p>The administrator is able to force users to change their password at next login by ticking the box on the change password form.</p>
+                    <p>When the user has logged in with the temporary password, they will be denied access to any of Lighthouse’s features until they complete the password change prompt.</p>
+                </div>
+            </div>
+            <a href="#top" class="d-block mt-2">Back to top</a>
+        </section>
+
+        <!-- User Roles -->
+        <section id="user-roles" class="mb-5">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2>User Roles</h2>
+                    <hr>
+                    <h3>Administrator</h3>
+                    <p>Administrator has full access to all features in Lighthouse. They can create, view, edit and delete Renewals/Products/Customers.</p>
+                    <p>Administrators can view the archived Renewals.</p>
+                    <p>They can also manage users in the company.</p>
+                    <br>
+                    <h3>User</h3>
+                    <p>User has access to all features in Lighthouse. They can create, view and edit Renewals/Products/Customers.</p>
+                    <p>Users cannot delete Renewals/Products/Customers.</p>
+                    <p>Users can close and archive Renewals.</p>
+                    <p>Users can edit their own profile, but cannot access or edit any other users in the company.</p>
+                </div>
+            </div>
+            <a href="#top" class="d-block mt-2">Back to top</a>
+        </section>
+
+        <!-- Features -->
+        <section id="features" class="mb-5">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2>Features</h2>
+                    <p>The dashboard has a weekend weather report and will show any renewals that are 7 days out, urgent or overdue.</p>
+                    <hr>
+                    <h3>Customers</h3>
+                    <p>On the Customers management page you can view all of the Customers.</p>
+                    <p>Click ‘New Customer’ to create a new customer.</p>
+                    <p>Once a new customer has been created, you can view the individual customer by clicking their name.</p>
+                    <p>On the customer detailed view is an edit button, and all the renewals associated with that customer are viewable on the same page.</p>
+                    <p>‘Edit’ allows you to change all the customer details, and delete the customer if needed.</p>
+                    <br>
+                    <h3>Products</h3>
+                    <p>On the Products management page you can view all of the Products.</p>
+                    <p>Click ‘New Product’ to create a new product.</p>
+                    <p>Once a new product has been created, you can view the individual product by clicking its name.</p>
+                    <p>On the product detailed view is an edit button, and all the renewals associated with that product are viewable on the same page.</p>
+                    <p>‘Edit’ allows you to change all the product details, and delete the customer if needed.</p>
+                    <br>
+                    <h3>Renewals</h3>
+                    <p>On the Renewals management page you can view all of the renewals and filter them by status, product and/or customer. The table can be sorted by clicking on the column header.</p>
+                    <p>Renewals that are due in 7 days are highlighted in amber for attention.</p>
+                    <p>Renewals that are due in 24 hours, or are over the renewal date are highlighted red for immediate attention.</p>
+                    <p>Renewals come in below states to keep track of where in the process each renewal sits.</p>
+                    <hr>
+                    <p><b>Open</b>: The renewal is pending action closer to the renewal date.</p>
+                    <p><b>Quoted</b>: A quote has been issued to the customer for action.</p>
+                    <p><b>For Invoicing</b>: The customer has approved, and the renewal is pending Accounts/Bookkeeping action to issue an invoice, check for payment, approve renewal purchase with the product supplier.</p>
+                    <p><b>Closed</b>: Invoices are issued. Payment has been received. When setting a renewal to ‘closed’ and clicking save, the renewal is copied to the Archive for historical purposes. The renewal is then re-opened with the current start date and a new frequency/renewal date can be set.</p>
+                    <hr>
+                    <p>Administrators can access the Archive table in a button under their user icon to the top right.</p>
+                    <p>On the renewal view page is a button ‘Get Quote’ that will put a quotation for that renewal in the user’s clipboard so they can paste it into an email and forward to the customer.</p>
+                </div>
+            </div>
+            <a href="#top" class="d-block mt-2">Back to top</a>
+        </section>
+
+        <!-- Deleting -->
+        <section id="deleting" class="mb-5">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2>Deleting Renewals, Customers & Products</h2>
+                    <p>Renewals are intrinsically linked to Customers and Products, so be aware there are consequences to deleting any one.</p>
+                    <p>Deleting a Renewal just removes it. Customers and Products attached to that Renewal remain in the system to be used elsewhere.</p>
+                    <p>Deleting a Customer, deletes all of the Renewals attached to that Customer. Products are unaffected.</p>
+                    <p>Deleting a Product deletes all of the Renewals attached to that Product. Customers are unaffected.</p>
+                </div>
+            </div>
+            <a href="#top" class="d-block mt-2">Back to top</a>
+        </section>
 
     </div>
 </div>
+
+<script src="{% static 'js/TOC.js' %}"></script>
+
+
 
 {% endblock %}
