@@ -28,24 +28,24 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/help' %}active{% endif %}" href="/help">Help</a>
+                        <a class="nav-link {% if request.path == '/help/' %}active{% endif %}" href="/help">Help</a>
                     </li>
 
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
+                        <a class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}" href="/dashboard">Dashboard</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/renewals' %}active{% endif %}" href="/renewals">Renewals</a>
+                        <a class="nav-link {% if request.path == '/renewals/' %}active{% endif %}" href="/renewals">Renewals</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/products' %}active{% endif %}" href="/products">Products</a>
+                        <a class="nav-link {% if request.path == '/products/' %}active{% endif %}" href="/products">Products</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/customers' %}active{% endif %}" href="/customers">Customers</a>
+                        <a class="nav-link {% if request.path == '/customers/' %}active{% endif %}" href="/customers">Customers</a>
                     </li>
                 {% endif %}
 
@@ -96,28 +96,28 @@
 
         {% if not request.user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+                <a class="nav-link" href="/">Home</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link {% if request.path == '/help' %}active{% endif %}" href="/help">Help</a>
+                <a class="nav-link" href="/help/">Help</a>
             </li>
 
         {% else %}
             <li class="nav-item">
-                <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="/dashboard">Dashboard</a>
+                <a class="nav-link" href="/dashboard/">Dashboard</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link {% if request.path == '/renewals' %}active{% endif %}" href="/renewals">Renewals</a>
+                <a class="nav-link" href="/renewals/">Renewals</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link {% if request.path == '/products' %}active{% endif %}" href="/products">Products</a>
+                <a class="nav-link" href="/products/">Products</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link {% if request.path == '/customers' %}active{% endif %}" href="/customers">Customers</a>
+                <a class="nav-link" href="/customers/">Customers</a>
             </li>
         {% endif %}
 
