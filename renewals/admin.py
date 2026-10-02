@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Renewal, RenewalStatus, RenewalArchive
 
-# Register your models here.
+admin.site.register(Renewal)
+admin.site.register(RenewalStatus)
+admin.site.register(RenewalArchive)
